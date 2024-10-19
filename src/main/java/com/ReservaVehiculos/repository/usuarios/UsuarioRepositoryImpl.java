@@ -31,6 +31,14 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
     }
 
     @Override
+    public void deleteById(Integer id) {
+
+        String sql="UPDATE tbl_usuarios SET activo=false WHERE id=?";
+        jdbcTemplate.update(sql,id);
+
+    }
+
+    @Override
     public boolean existsByEmail(String email) {
 
         String sql = "SELECT COUNT(*) FROM tbl_usuarios WHERE email=?";
@@ -45,6 +53,15 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
 
         String sql= "SELECT COUNT(*) FROM tbl_usuarios WHERE cedula=?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, cedula);
+
+        return count != null && count > 0;
+    }
+
+    @Override
+    public boolean existsById(Integer id) {
+
+        String sql= "SELECT COUNT(*) FROM tbl_usuarios WHERE id=?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
 
         return count != null && count > 0;
     }

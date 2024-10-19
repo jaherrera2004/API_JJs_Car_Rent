@@ -17,27 +17,37 @@ import org.springframework.stereotype.Service;
 public class UsuarioServiceImpl implements UsuarioIService {
 
     private final UsuarioMapper usuarioMapper;
-    private  final UsuarioIRepository usuarioIRepository;
+    private final UsuarioIRepository usuarioIRepository;
 
     @Override
     public void registrarUsuario(UsuarioRequest request) {
 
         UsuarioDto usuarioDto = construirUsuario(request);
 
-        if(usuarioIRepository.existsByEmail(request.getEmail())){
-            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"Ya hay un usuario registrado con este correo");
+        if (usuarioIRepository.existsByEmail(request.getEmail())) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Ya hay un usuario registrado con este correo");
         }
 
-        if(usuarioIRepository.existsByCedula(request.getCedula())){
-            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"Ya hay un usuario registrado con esta cedula");
+        if (usuarioIRepository.existsByCedula(request.getCedula())) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Ya hay un usuario registrado con esta cedula");
         }
 
-        if(request.getEdad()<=17){
-            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"Debes ser mayor de edad para registrarte");
+        if (request.getEdad() <= 17) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Debes ser mayor de edad para registrarte");
         }
 
         usuarioIRepository.save(usuarioMapper.toEntity(usuarioDto));
 
+    }
+
+    @Override
+    public void eliminarUsuario(Integer id) {
+
+        if (!usuarioIRepository.existsById(id)) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "No encontramos el usuario con ese id");
+        }
+
+        usuarioIRepository.deleteById(id);
     }
 
     private UsuarioDto construirUsuario(UsuarioRequest request) {
@@ -50,7 +60,6 @@ public class UsuarioServiceImpl implements UsuarioIService {
                 .telefono(request.getTelefono())
                 .activo(true)
                 .contrasenia(request.getContrasenia())
-                .foto(null)
                 .idRol(1)
                 .build();
     }
