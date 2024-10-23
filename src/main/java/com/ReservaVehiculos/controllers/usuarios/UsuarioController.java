@@ -1,7 +1,7 @@
-package com.ReservaVehiculos.controllers;
+package com.ReservaVehiculos.controllers.usuarios;
 
 import com.ReservaVehiculos.models.request.usuario.UsuarioRequest;
-import com.ReservaVehiculos.services.usuario.UsuarioIService;
+import com.ReservaVehiculos.services.usuarios.UsuarioIService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +19,6 @@ public class UsuarioController {
 
     @DeleteMapping("/{id}")
     public void eliminarUsuario(@PathVariable Integer id){
-
+        usuarioIService.eliminarUsuario(id);
     }
 }

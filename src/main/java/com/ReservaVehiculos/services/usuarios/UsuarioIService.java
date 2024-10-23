@@ -1,4 +1,4 @@
-package com.ReservaVehiculos.services.usuario;
+package com.ReservaVehiculos.services.usuarios;
 
 import com.ReservaVehiculos.models.request.usuario.UsuarioRequest;
 

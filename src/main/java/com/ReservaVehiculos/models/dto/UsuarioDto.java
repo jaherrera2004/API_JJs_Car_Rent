@@ -18,7 +18,6 @@ public class UsuarioDto {
     private String telefono;
     private String contrasenia;
     private boolean activo;
-    private String foto;
 
     private Integer idRol;
 
