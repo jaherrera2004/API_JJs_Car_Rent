@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -21,8 +23,6 @@ public class UsuarioServiceImpl implements UsuarioIService {
 
     @Override
     public void registrarUsuario(UsuarioRequest request) {
-
-        UsuarioDto usuarioDto = construirUsuario(request);
 
         if (usuarioIRepository.existsByEmail(request.getEmail())) {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Ya hay un usuario registrado con este correo");
@@ -36,6 +36,7 @@ public class UsuarioServiceImpl implements UsuarioIService {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Debes ser mayor de edad para registrarte");
         }
 
+        UsuarioDto usuarioDto = construirUsuario(request);
         usuarioIRepository.save(usuarioMapper.toEntity(usuarioDto));
 
     }
@@ -48,6 +49,26 @@ public class UsuarioServiceImpl implements UsuarioIService {
         }
 
         usuarioIRepository.desactivarUsuario(id);
+    }
+
+    @Override
+    public void activarUsuario(Integer id) {
+
+        if (!usuarioIRepository.existsById(id)) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "No encontramos el usuario con ese id");
+        }
+
+        usuarioIRepository.activarUsuario(id);
+    }
+
+    @Override
+    public List<UsuarioDto> obtenerListaUsuarios() {
+        return usuarioIRepository.findAll();
+    }
+
+    @Override
+    public UsuarioDto obtenerUsuarioPorId(Integer id) {
+        return usuarioIRepository.findById(id);
     }
 
     private UsuarioDto construirUsuario(UsuarioRequest request) {

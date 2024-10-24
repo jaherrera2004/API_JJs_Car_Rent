@@ -1,9 +1,12 @@
 package com.ReservaVehiculos.controllers.usuarios;
 
+import com.ReservaVehiculos.models.dto.UsuarioDto;
 import com.ReservaVehiculos.models.request.usuario.UsuarioRequest;
 import com.ReservaVehiculos.services.usuarios.UsuarioIService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -17,8 +20,23 @@ public class UsuarioController {
         usuarioIService.registrarUsuario(request);
     }
 
-    @PutMapping("/{id}")
+    @DeleteMapping("/{id}")
     public void desactivarUsuario(@PathVariable Integer id){
         usuarioIService.desactivarUsuario(id);
+    }
+
+    @PutMapping("/{id}")
+    public void activarUsuario(@PathVariable Integer id){
+        usuarioIService.activarUsuario(id);
+    }
+
+    @GetMapping("/{id}")
+    public UsuarioDto obtenerUsuarioPorId(@PathVariable Integer id){
+        return usuarioIService.obtenerUsuarioPorId(id);
+    }
+
+    @GetMapping
+    public List<UsuarioDto>obtenerListaUsuarios(){
+        return usuarioIService.obtenerListaUsuarios();
     }
 }

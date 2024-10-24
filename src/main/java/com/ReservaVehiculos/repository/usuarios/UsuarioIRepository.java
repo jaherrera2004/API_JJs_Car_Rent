@@ -1,16 +1,28 @@
 package com.ReservaVehiculos.repository.usuarios;
 
+import com.ReservaVehiculos.models.dto.MarcaDto;
+import com.ReservaVehiculos.models.dto.UsuarioDto;
 import com.ReservaVehiculos.models.entity.UsuarioEntity;
+
+import java.util.List;
 
 public interface UsuarioIRepository {
 
-    public void save(UsuarioEntity usuarioEntity);
+    void save(UsuarioEntity usuarioEntity);
 
-    public void desactivarUsuario(Integer id);
+    void desactivarUsuario(Integer id);
 
-    public boolean existsByEmail(String email);
+    void activarUsuario(Integer id);
 
-    public boolean existsByCedula(String cedula);
+    boolean existsByEmail(String email);
 
-    public boolean existsById(Integer id);
+    boolean existsByCedula(String cedula);
+
+    boolean existsById(Integer id);
+
+    List<UsuarioDto> findAll();
+
+    UsuarioDto findById(Integer id);
+
+
 }

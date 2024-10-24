@@ -1,0 +1,82 @@
+DELIMITER //
+
+CREATE PROCEDURE registrar_usuario (
+    IN p_cedula VARCHAR(20),
+    IN p_nombre VARCHAR(50),
+    IN p_apellido VARCHAR(50),
+    IN p_edad INT,
+    IN p_email VARCHAR(100),
+    IN p_telefono VARCHAR(20),
+    IN p_contrasenia VARCHAR(255),
+    IN p_activo BOOLEAN,
+    IN p_id_rol INT
+)
+BEGIN
+    INSERT INTO tbl_usuarios (cedula, nombre, apellido, edad, email, telefono, contrasenia, activo, id_rol)
+    VALUES (p_cedula, p_nombre, p_apellido, p_edad, p_email, p_telefono, p_contrasenia, p_activo, p_id_rol);
+END //
+
+DELIMITER;
+------------------------------------------------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE PROCEDURE agregar_marca (
+    IN p_marca VARCHAR(20),
+    IN p_activo BOOLEAN
+
+)
+BEGIN
+    INSERT INTO tbl_marcas (marca,activo) VALUES (p_marca,p_activo);
+END$$
+
+DELIMITER;
+------------------------------------------------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE PROCEDURE desactivar_usuario (IN p_id INTEGER)
+
+BEGIN
+    UPDATE tbl_usuarios SET activo=false WHERE id=p_id;
+END$$
+
+DELIMITER;
+------------------------------------------------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE PROCEDURE desactivar_marca (IN p_id INTEGER)
+
+BEGIN
+    UPDATE tbl_marcas SET activo=false WHERE id=p_id;
+END$$
+
+DELIMITER ;
+------------------------------------------------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE PROCEDURE activar_marca (IN p_id INTEGER)
+
+BEGIN
+    UPDATE tbl_marcas SET activo=true WHERE id=p_id;
+END$$
+
+DELIMITER ;
+------------------------------------------------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE PROCEDURE activar_usuario (IN p_id INTEGER)
+
+BEGIN
+    UPDATE tbl_usuarios SET activo=true WHERE id=p_id;
+END$$
+
+DELIMITER ;
+------------------------------------------------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE PROCEDURE desactivar_usuario (IN p_id INTEGER)
+
+BEGIN
+    UPDATE tbl_usuarios SET activo=false WHERE id=p_id;
+END$$
+
+DELIMITER ;

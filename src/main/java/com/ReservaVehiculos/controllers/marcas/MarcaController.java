@@ -4,10 +4,9 @@ import com.ReservaVehiculos.models.dto.MarcaDto;
 import com.ReservaVehiculos.models.request.marcas.MarcaRequest;
 import com.ReservaVehiculos.services.marcas.MarcaIService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -17,7 +16,27 @@ public class MarcaController {
     private final MarcaIService marcaIService;
 
     @PostMapping
-    public MarcaDto agregarMarca(@RequestBody  MarcaRequest request){
-        return marcaIService.agregarMarca(request);
+    public void agregarMarca(@RequestBody MarcaRequest request) {
+        marcaIService.agregarMarca(request);
+    }
+
+    @GetMapping
+    public List<MarcaDto> obtenerListaMarcas() {
+        return marcaIService.obtenerListaMarcas();
+    }
+
+    @DeleteMapping("/{id}")
+    public void desactivarMarca(@PathVariable Integer id){
+        marcaIService.desactivarMarca(id);
+    }
+
+    @PutMapping("/{id}")
+    public void activarMarca(@PathVariable Integer id){
+        marcaIService.activarMarca(id);
+    }
+
+    @GetMapping("/{id}")
+    public MarcaDto obtenerMarcaPorId(@PathVariable Integer id){
+        return marcaIService.obtenerPorId(id);
     }
 }

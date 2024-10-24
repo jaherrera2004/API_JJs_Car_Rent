@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MarcaServiceImpl implements MarcaIService{
@@ -17,7 +19,7 @@ public class MarcaServiceImpl implements MarcaIService{
    private final MarcaIRepository marcaIRepository;
 
     @Override
-    public MarcaDto agregarMarca(MarcaRequest request) {
+    public void agregarMarca(MarcaRequest request) {
 
         if(marcaIRepository.existsByMarca(request.getMarca())){
             throw new HttpGenericException(HttpStatus.BAD_REQUEST,"Esta marca ya existe");
@@ -26,7 +28,38 @@ public class MarcaServiceImpl implements MarcaIService{
         MarcaDto marcaDto= construirMarca(request);
         marcaIRepository.save(marcaMapper.toEntity(marcaDto));
 
-        return marcaDto;
+
+    }
+
+    @Override
+    public List<MarcaDto> obtenerListaMarcas() {
+        return marcaIRepository.findAll();
+    }
+
+    @Override
+    public void desactivarMarca(Integer id) {
+        if(!marcaIRepository.existsById(id)){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"El id de la marca que has ingresado no existe");
+        }
+
+        marcaIRepository.desactivarMarca(id);
+    }
+
+    @Override
+    public void activarMarca(Integer id) {
+        if(!marcaIRepository.existsById(id)){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"El id de la marca que has ingresado no existe");
+        }
+        marcaIRepository.activarMarca(id);
+    }
+
+    @Override
+    public MarcaDto obtenerPorId(Integer id) {
+        if(!marcaIRepository.existsById(id)){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"El id de la marca que has ingresado no existe");
+        }
+
+        return marcaIRepository.findById(id);
     }
 
     private MarcaDto construirMarca(MarcaRequest request){
