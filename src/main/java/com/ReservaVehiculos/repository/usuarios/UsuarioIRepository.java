@@ -6,7 +6,7 @@ public interface UsuarioIRepository {
 
     public void save(UsuarioEntity usuarioEntity);
 
-    public void deleteById(Integer id);
+    public void desactivarUsuario(Integer id);
 
     public boolean existsByEmail(String email);
 

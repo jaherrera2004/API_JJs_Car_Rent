@@ -41,13 +41,13 @@ public class UsuarioServiceImpl implements UsuarioIService {
     }
 
     @Override
-    public void eliminarUsuario(Integer id) {
+    public void desactivarUsuario(Integer id) {
 
         if (!usuarioIRepository.existsById(id)) {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "No encontramos el usuario con ese id");
         }
 
-        usuarioIRepository.deleteById(id);
+        usuarioIRepository.desactivarUsuario(id);
     }
 
     private UsuarioDto construirUsuario(UsuarioRequest request) {

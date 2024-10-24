@@ -15,9 +15,7 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
     @Override
     public void save(UsuarioEntity usuarioEntity) {
 
-        String sql = "INSERT INTO tbl_usuarios" +
-                "(cedula,nombre,apellido,edad,email,telefono,contrasenia,activo,id_rol)" +
-                "VALUES (?,?,?,?,?,?,?,?,?)";
+        String sql = "CALL registrar_usuario(?,?,?,?,?,?,?,?,?);";
 
         jdbcTemplate.update(sql, usuarioEntity.getCedula(),
                 usuarioEntity.getNombre(),
@@ -31,9 +29,9 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
     }
 
     @Override
-    public void deleteById(Integer id) {
+    public void desactivarUsuario(Integer id) {
 
-        String sql="UPDATE tbl_usuarios SET activo=false WHERE id=?";
+        String sql="CALL desactivar_usuario(?)";
         jdbcTemplate.update(sql,id);
 
     }

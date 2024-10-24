@@ -17,8 +17,8 @@ public class UsuarioController {
         usuarioIService.registrarUsuario(request);
     }
 
-    @DeleteMapping("/{id}")
-    public void eliminarUsuario(@PathVariable Integer id){
-        usuarioIService.eliminarUsuario(id);
+    @PutMapping("/{id}")
+    public void desactivarUsuario(@PathVariable Integer id){
+        usuarioIService.desactivarUsuario(id);
     }
 }

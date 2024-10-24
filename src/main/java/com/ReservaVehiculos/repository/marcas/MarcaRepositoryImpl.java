@@ -22,7 +22,7 @@ public class MarcaRepositoryImpl implements MarcaIRepository{
 
     @Override
     public void save(MarcaEntity marca) {
-        String sql="INSERT INTO tbl_marcas (marca,activo) VALUES (?,?)";
+        String sql="CALL agregar_marca(?,?);";
 
         jdbcTemplate.update(sql,marca.getMarca(),marca.isActivo());
     }
