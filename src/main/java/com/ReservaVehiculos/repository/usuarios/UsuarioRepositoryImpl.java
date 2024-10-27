@@ -1,22 +1,17 @@
 package com.ReservaVehiculos.repository.usuarios;
 
-import com.ReservaVehiculos.mappers.UsuarioMapper;
-import com.ReservaVehiculos.models.dto.MarcaDto;
-import com.ReservaVehiculos.models.dto.UsuarioDto;
 import com.ReservaVehiculos.models.entity.UsuarioEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
 public class UsuarioRepositoryImpl implements UsuarioIRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final UsuarioMapper usuarioMapper;
 
     @Override
     public void save(UsuarioEntity usuarioEntity) {
@@ -79,7 +74,7 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
     }
 
     @Override
-    public List<UsuarioDto> findAll() {
+    public List<UsuarioEntity> findAll() {
         String sql = "SELECT * FROM ver_lista_usuarios;";
 
         List<UsuarioEntity> listaUsuariosEntity = jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -97,13 +92,11 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
             return usuarioEntity;
         });
 
-        return listaUsuariosEntity.stream()
-                .map(usuarioMapper::toDto)
-                .collect(Collectors.toList());
+        return listaUsuariosEntity;
     }
 
     @Override
-    public UsuarioDto findById(Integer id) {
+    public UsuarioEntity findById(Integer id) {
         String sql = "SELECT * FROM ver_lista_usuarios WHERE id=?;";
 
         UsuarioEntity usuarioEntity= jdbcTemplate.queryForObject(sql,(rs,rowNum)->{
@@ -120,6 +113,6 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
             return usuarioEntityAux;
         },id);
 
-        return usuarioMapper.toDto(usuarioEntity);
+        return usuarioEntity;
     }
 }

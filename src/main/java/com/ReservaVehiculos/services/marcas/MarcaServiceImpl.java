@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,10 @@ public class MarcaServiceImpl implements MarcaIService{
 
     @Override
     public List<MarcaDto> obtenerListaMarcas() {
-        return marcaIRepository.findAll();
+        return marcaIRepository.findAll()
+                .stream()
+                .map(marcaMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -58,8 +62,7 @@ public class MarcaServiceImpl implements MarcaIService{
         if(!marcaIRepository.existsById(id)){
             throw new HttpGenericException(HttpStatus.BAD_REQUEST,"El id de la marca que has ingresado no existe");
         }
-
-        return marcaIRepository.findById(id);
+        return marcaMapper.toDto(marcaIRepository.findById(id));
     }
 
     private MarcaDto construirMarca(MarcaRequest request){

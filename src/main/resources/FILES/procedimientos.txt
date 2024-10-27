@@ -80,3 +80,18 @@ BEGIN
 END$$
 
 DELIMITER ;
+------------------------------------------------------------------------------------------------------------------------
+DELIMITER //
+
+CREATE PROCEDURE agregar_modelo(
+    IN p_modelo VARCHAR(50),
+    IN p_id_marca INTEGER,
+    IN p_id_tipo_vehiculo INTEGER,
+    IN p_activo BOOLEAN
+)
+BEGIN
+    INSERT INTO tbl_modelos (id_marca, id_tipo_vehiculo, modelo, activo)
+    VALUES (p_id_marca, p_id_tipo_vehiculo, p_modelo, p_activo);
+END //
+
+DELIMITER ;

@@ -1,7 +1,4 @@
 package com.ReservaVehiculos.repository.usuarios;
-
-import com.ReservaVehiculos.models.dto.MarcaDto;
-import com.ReservaVehiculos.models.dto.UsuarioDto;
 import com.ReservaVehiculos.models.entity.UsuarioEntity;
 
 import java.util.List;
@@ -20,9 +17,9 @@ public interface UsuarioIRepository {
 
     boolean existsById(Integer id);
 
-    List<UsuarioDto> findAll();
+    List<UsuarioEntity> findAll();
 
-    UsuarioDto findById(Integer id);
+    UsuarioEntity findById(Integer id);
 
 
 }

@@ -1,6 +1,6 @@
 package com.ReservaVehiculos.repository.marcas;
 
-import com.ReservaVehiculos.models.dto.MarcaDto;
+
 import com.ReservaVehiculos.models.entity.MarcaEntity;
 
 import java.util.List;
@@ -8,9 +8,9 @@ import java.util.List;
 public interface MarcaIRepository {
     boolean existsByMarca(String marca);
     void save(MarcaEntity marca);
-    List<MarcaDto> findAll();
+    List<MarcaEntity> findAll();
     void desactivarMarca(Integer id);
     boolean existsById(Integer id);
     void activarMarca(Integer id);
-    MarcaDto findById(Integer id);
+    MarcaEntity findById(Integer id);
 }

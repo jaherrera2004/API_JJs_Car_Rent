@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -63,12 +64,15 @@ public class UsuarioServiceImpl implements UsuarioIService {
 
     @Override
     public List<UsuarioDto> obtenerListaUsuarios() {
-        return usuarioIRepository.findAll();
+        return usuarioIRepository.findAll()
+                .stream()
+                .map(usuarioMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public UsuarioDto obtenerUsuarioPorId(Integer id) {
-        return usuarioIRepository.findById(id);
+        return usuarioMapper.toDto(usuarioIRepository.findById(id));
     }
 
     private UsuarioDto construirUsuario(UsuarioRequest request) {

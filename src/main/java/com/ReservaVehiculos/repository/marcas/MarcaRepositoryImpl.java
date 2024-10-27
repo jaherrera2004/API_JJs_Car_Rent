@@ -1,14 +1,12 @@
 package com.ReservaVehiculos.repository.marcas;
 
 import com.ReservaVehiculos.mappers.MarcaMapper;
-import com.ReservaVehiculos.models.dto.MarcaDto;
 import com.ReservaVehiculos.models.entity.MarcaEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Repository
@@ -34,7 +32,7 @@ public class MarcaRepositoryImpl implements MarcaIRepository{
     }
 
     @Override
-    public List<MarcaDto> findAll() {
+    public List<MarcaEntity> findAll() {
         String sql="SELECT * FROM ver_lista_marcas";
 
         List<MarcaEntity> listaMarcasEntity = jdbcTemplate.query(sql,(rs,rowNum)->{
@@ -47,9 +45,7 @@ public class MarcaRepositoryImpl implements MarcaIRepository{
            return marcaEntity;
         });
 
-        return listaMarcasEntity.stream()
-                .map(marcaMapper::toDto)
-                .collect(Collectors.toList());
+        return listaMarcasEntity;
     }
 
     @Override
@@ -72,7 +68,7 @@ public class MarcaRepositoryImpl implements MarcaIRepository{
     }
 
     @Override
-    public MarcaDto findById(Integer id) {
+    public MarcaEntity findById(Integer id) {
 
         String sql="SELECT * FROM ver_lista_marcas WHERE id=?";
 
@@ -86,6 +82,6 @@ public class MarcaRepositoryImpl implements MarcaIRepository{
             return entity;
 
         },id);
-        return marcaMapper.toDto(marcaEntity);
+        return marcaEntity;
     }
 }
