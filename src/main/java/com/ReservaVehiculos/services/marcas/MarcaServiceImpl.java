@@ -28,8 +28,6 @@ public class MarcaServiceImpl implements MarcaIService{
 
         MarcaDto marcaDto= construirMarca(request);
         marcaIRepository.save(marcaMapper.toEntity(marcaDto));
-
-
     }
 
     @Override

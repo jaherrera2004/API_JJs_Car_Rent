@@ -3,3 +3,7 @@ SELECT id,cedula,nombre, apellido, edad, email, telefono, activo FROM tbl_usuari
 ------------------------------------------------------------------------------------------------------------------------
 CREATE VIEW ver_lista_marcas AS
 SELECT id,marca,activo FROM tbl_marcas;
+------------------------------------------------------------------------------------------------------------------------
+
+CREATE VIEW ver_lista_modelos AS
+SELECT id_marca,modelo,id_tipo_vehiculo FROM tbl_modelos;

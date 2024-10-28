@@ -84,4 +84,10 @@ public class MarcaRepositoryImpl implements MarcaIRepository{
         },id);
         return marcaEntity;
     }
+
+    @Override
+    public void updateFoto(String foto, String marca) {
+
+    }
+
 }

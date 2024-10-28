@@ -41,6 +41,16 @@ public class ModeloServiceImpl implements ModeloIService{
 
     }
 
+    @Override
+    public ModeloDto obtenerPorId(Integer id) {
+
+        if(!modeloIRepository.existsById(id)){
+            throw  new HttpGenericException(HttpStatus.BAD_REQUEST,"No hemos encontrado ese modelo");
+        }
+
+        return modeloMapper.toDto(modeloIRepository.findById(id));
+    }
+
     private ModeloDto construirModelo(ModeloRequest request){
         return ModeloDto.builder()
                 .modelo(request.getModelo())

@@ -6,6 +6,7 @@ import com.ReservaVehiculos.models.entity.MarcaEntity;
 import java.util.List;
 
 public interface MarcaIRepository {
+
     boolean existsByMarca(String marca);
     void save(MarcaEntity marca);
     List<MarcaEntity> findAll();
@@ -13,4 +14,5 @@ public interface MarcaIRepository {
     boolean existsById(Integer id);
     void activarMarca(Integer id);
     MarcaEntity findById(Integer id);
+    void updateFoto(String foto, String marca);
 }

@@ -1,12 +1,10 @@
 package com.ReservaVehiculos.controllers.modelos;
 
+import com.ReservaVehiculos.models.dto.ModeloDto;
 import com.ReservaVehiculos.models.request.modelo.ModeloRequest;
 import com.ReservaVehiculos.services.modelos.ModeloIService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,6 +16,11 @@ public class ModeloController {
     @PostMapping
     public void agregarModelo(@RequestBody ModeloRequest modeloRequest){
         modeloIService.agregarModelo(modeloRequest);
+    }
+
+    @GetMapping("/{id}")
+    public ModeloDto obtenerModeloPorId(@PathVariable Integer id){
+        return modeloIService.obtenerPorId(id);
     }
 
 }
