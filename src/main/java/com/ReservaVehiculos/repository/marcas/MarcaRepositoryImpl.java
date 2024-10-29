@@ -86,8 +86,10 @@ public class MarcaRepositoryImpl implements MarcaIRepository{
     }
 
     @Override
-    public void updateFoto(String foto, String marca) {
+    public void actualizarFoto(String foto, String marca) {
+        String sql="UPDATE tbl_marcas SET logo = ? WHERE marca=?;";
 
+        jdbcTemplate.update(sql,foto,marca);
     }
 
 }

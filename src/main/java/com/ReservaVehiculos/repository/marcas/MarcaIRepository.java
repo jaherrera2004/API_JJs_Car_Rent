@@ -14,5 +14,5 @@ public interface MarcaIRepository {
     boolean existsById(Integer id);
     void activarMarca(Integer id);
     MarcaEntity findById(Integer id);
-    void updateFoto(String foto, String marca);
+    void actualizarFoto(String foto, String marca);
 }
