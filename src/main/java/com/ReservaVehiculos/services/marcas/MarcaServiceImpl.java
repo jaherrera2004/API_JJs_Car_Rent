@@ -8,6 +8,8 @@ import com.ReservaVehiculos.models.request.marcas.MarcaRequest;
 import com.ReservaVehiculos.repository.marcas.MarcaIRepository;
 import com.ReservaVehiculos.utils.ArchivoUtil;
 import lombok.RequiredArgsConstructor;
+import org.antlr.v4.runtime.misc.Pair;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -74,8 +76,8 @@ public class MarcaServiceImpl implements MarcaIService {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "La marca que has ingresado no existe");
         }
 
-        if(!archivoUtil.esExtensionValida(request.getLogo())){
-            throw  new HttpGenericException(HttpStatus.BAD_REQUEST,"Debes enviar archivos en formato jpg, png o jepg");
+        if (!archivoUtil.esExtensionValida(request.getLogo())) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Debes enviar archivos en formato jpg, png o jepg");
         }
 
         if (!archivoUtil.esTamanioValido(request.getLogo())) {
@@ -84,6 +86,41 @@ public class MarcaServiceImpl implements MarcaIService {
 
         String nombreFoto = archivoUtil.subirArchivo(request.getLogo());
         marcaIRepository.actualizarFoto(nombreFoto, request.getMarca());
+    }
+
+    @Override
+    public Pair<ByteArrayResource, String> obtenerLogo(Integer id) throws IOException {
+
+        if(!marcaIRepository.existsById(id)){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"la marca que ingresaste no existe");
+        }
+
+        if(!marcaIRepository.tieneLogo(id)){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"La marca no tiene logo");
+        }
+
+        String logoNombre = marcaIRepository.obtenerLogoPorId(id);
+        byte[] logoBytes = archivoUtil.obtenerArchivo(logoNombre);
+        String extension = archivoUtil.obtenerExtension(logoNombre);
+        String mediaType = "image/" + extension;
+
+        return new Pair<>(new ByteArrayResource(logoBytes),mediaType);
+
+    }
+
+    @Override
+    public void eliminarLogo(Integer id) throws IOException {
+
+        if(!marcaIRepository.existsById(id)){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"la marca que ingresaste no existe");
+        }
+
+        if(!marcaIRepository.tieneLogo(id)){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"La marca no tiene logo");
+        }
+
+        archivoUtil.eliminarLogo(marcaIRepository.obtenerLogoPorId(id));
+        marcaIRepository.eliminarLogo(id);
     }
 
     private MarcaDto construirMarca(MarcaRequest request) {

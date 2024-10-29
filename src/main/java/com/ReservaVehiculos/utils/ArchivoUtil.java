@@ -5,7 +5,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -33,17 +35,29 @@ public class ArchivoUtil {
         return nuevoNombre;
     }
 
-    public byte[] obtenerArchivo() {
-        return null;
+    public byte[] obtenerArchivo(String nombreArchivo) throws IOException {
+        File foto = new File(ArchivoUtil.UBICACION, nombreArchivo);
+
+        if (!foto.exists()) {
+            throw new FileNotFoundException("El archivo no fue encontrado" + nombreArchivo);
+        }
+        return Files.readAllBytes(foto.toPath());
     }
 
-    private String obtenerExtension(String nombreArchivo) {
+    public String obtenerExtension(String nombreArchivo) {
 
         return nombreArchivo.substring(nombreArchivo.lastIndexOf(".") + 1);
     }
 
-    public void eliminarArchivo() {
+    public void eliminarLogo(String nombreLogo) throws IOException{
 
+        File logo = new File(ArchivoUtil.UBICACION,nombreLogo);
+
+        if(!logo.exists()){
+            throw new FileNotFoundException("Archivo no encontrado");
+        }
+
+        logo.delete();
     }
 
     public boolean esExtensionValida(MultipartFile archivo) {
@@ -58,7 +72,7 @@ public class ArchivoUtil {
 
     public boolean esTamanioValido(MultipartFile archivo) {
 
-        if (archivo.getSize() > TAMANIO_MAXIMO) {
+        if (archivo.getSize() > ArchivoUtil.TAMANIO_MAXIMO) {
             return false;
         }
         return true;

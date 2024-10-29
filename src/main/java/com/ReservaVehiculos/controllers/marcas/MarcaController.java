@@ -5,6 +5,10 @@ import com.ReservaVehiculos.models.request.marcas.MarcaLogoRequest;
 import com.ReservaVehiculos.models.request.marcas.MarcaRequest;
 import com.ReservaVehiculos.services.marcas.MarcaIService;
 import lombok.RequiredArgsConstructor;
+import org.antlr.v4.runtime.misc.Pair;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
@@ -42,8 +46,22 @@ public class MarcaController {
     }
 
     @PostMapping("/logo")
-    public void agregarFoto(@ModelAttribute  MarcaLogoRequest request) throws IOException {
+    public void agregarLogo(@ModelAttribute MarcaLogoRequest request) throws IOException {
         marcaIService.agregarLogo(request);
+    }
+
+    @GetMapping("/logo/{id}")
+    public ResponseEntity<ByteArrayResource> obtenerLogo(@PathVariable Integer id) throws IOException {
+        Pair<ByteArrayResource,String> data = marcaIService.obtenerLogo(id);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(data.b))
+                .body(data.a);
+    }
+
+    @DeleteMapping("/logo/{id}")
+    public void eliminarLogo(@PathVariable Integer id) throws IOException {
+        marcaIService.eliminarLogo(id);
     }
 
 }
