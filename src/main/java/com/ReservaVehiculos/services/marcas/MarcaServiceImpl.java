@@ -5,6 +5,7 @@ import com.ReservaVehiculos.models.dto.MarcaDto;
 import com.ReservaVehiculos.models.exceptions.HttpGenericException;
 import com.ReservaVehiculos.models.request.marcas.MarcaLogoRequest;
 import com.ReservaVehiculos.models.request.marcas.MarcaRequest;
+import com.ReservaVehiculos.models.response.marcas.MarcaConLogoResponse;
 import com.ReservaVehiculos.repository.marcas.MarcaIRepository;
 import com.ReservaVehiculos.utils.ArchivoUtil;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -121,6 +125,39 @@ public class MarcaServiceImpl implements MarcaIService {
 
         archivoUtil.eliminarLogo(marcaIRepository.obtenerLogoPorId(id));
         marcaIRepository.eliminarLogo(id);
+    }
+
+    @Override
+    public List<MarcaConLogoResponse> obtenerMarcasConLogo(){
+
+        List<MarcaConLogoResponse> listaMarcasConLogo = new ArrayList<>();
+        List<MarcaDto> listaMarcaDto = marcaIRepository.findAll().stream()
+                .map(marcaMapper::toDto)
+                .toList();
+
+        listaMarcaDto.forEach(marcaDto -> {
+
+            String nombreLogo = marcaIRepository.obtenerLogoPorId(marcaDto.getId());
+            String extension = archivoUtil.obtenerExtension(nombreLogo);
+
+            byte [] logo;
+            try {
+               logo = archivoUtil.obtenerArchivo(nombreLogo);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            MarcaConLogoResponse marcaConLogo = MarcaConLogoResponse.builder()
+                    .marcaInfo(marcaMapper.toDto(marcaIRepository.findById(marcaDto.getId())))
+                    .mediaType("image/"+extension)
+                    .base64Image(Base64.getEncoder().encodeToString(logo))
+                    .build();
+
+            marcaIRepository.obtenerLogoPorId(marcaDto.getId());
+            listaMarcasConLogo.add(marcaConLogo);
+        });
+
+        return listaMarcasConLogo;
     }
 
     private MarcaDto construirMarca(MarcaRequest request) {

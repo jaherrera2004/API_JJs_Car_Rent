@@ -3,6 +3,7 @@ package com.ReservaVehiculos.services.marcas;
 import com.ReservaVehiculos.models.dto.MarcaDto;
 import com.ReservaVehiculos.models.request.marcas.MarcaLogoRequest;
 import com.ReservaVehiculos.models.request.marcas.MarcaRequest;
+import com.ReservaVehiculos.models.response.marcas.MarcaConLogoResponse;
 import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.core.io.ByteArrayResource;
 
@@ -26,4 +27,5 @@ public interface MarcaIService {
 
     void eliminarLogo(Integer id) throws IOException;
 
+    List<MarcaConLogoResponse> obtenerMarcasConLogo();
 }

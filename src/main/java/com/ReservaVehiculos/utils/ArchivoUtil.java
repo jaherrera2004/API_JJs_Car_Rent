@@ -16,7 +16,7 @@ import java.util.UUID;
 public class ArchivoUtil {
 
     private final static String UBICACION = "C:/ReservaVehiculos/archivos/";
-    private static final List<String> EXTENSIONES_VALIDAS = Arrays.asList("jpg", "jpeg", "png");
+    private static final List<String> EXTENSIONES_VALIDAS = Arrays.asList("jpg", "jpeg", "png", "webp");
     private final static float TAMANIO_MAXIMO = 2 * 1024 * 1024; // 2MB
 
     public String subirArchivo(MultipartFile foto) throws IOException {
