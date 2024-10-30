@@ -153,7 +153,6 @@ public class MarcaServiceImpl implements MarcaIService {
                     .base64Image(Base64.getEncoder().encodeToString(logo))
                     .build();
 
-            marcaIRepository.obtenerLogoPorId(marcaDto.getId());
             listaMarcasConLogo.add(marcaConLogo);
         });
 
