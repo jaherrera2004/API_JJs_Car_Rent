@@ -26,6 +26,10 @@ public class UsuarioRequest {
     @NotEmpty(message = "El apellido no debe estar vacio")
     private String apellido;
 
+    @NotNull(message = "El username no debe ser nulo")
+    @NotEmpty(message = "El username no debe estar vacio")
+    private String username;
+
     @Min(value = 18, message = "Debes ser mayor de edad")
     private Integer edad;
 

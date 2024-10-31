@@ -5,6 +5,7 @@ CREATE PROCEDURE registrar_usuario (
     IN p_nombre VARCHAR(50),
     IN p_apellido VARCHAR(50),
     IN p_edad INT,
+    IN p_username VARCHAR(20),
     IN p_email VARCHAR(100),
     IN p_telefono VARCHAR(20),
     IN p_contrasenia VARCHAR(255),
@@ -12,8 +13,8 @@ CREATE PROCEDURE registrar_usuario (
     IN p_id_rol INT
 )
 BEGIN
-    INSERT INTO tbl_usuarios (cedula, nombre, apellido, edad, email, telefono, contrasenia, activo, id_rol)
-    VALUES (p_cedula, p_nombre, p_apellido, p_edad, p_email, p_telefono, p_contrasenia, p_activo, p_id_rol);
+    INSERT INTO tbl_usuarios (cedula, nombre, apellido, edad,username, email, telefono, contrasenia, activo, id_rol)
+    VALUES (p_cedula, p_nombre, p_apellido, p_edad,p_username, p_email, p_telefono, p_contrasenia, p_activo, p_id_rol);
 END //
 
 DELIMITER;

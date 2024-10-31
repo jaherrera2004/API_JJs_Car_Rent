@@ -13,6 +13,7 @@ public class UsuarioDto {
     private String cedula;
     private String nombre;
     private String apellido;
+    private String username;
     private Integer edad;
     private String email;
     private String telefono;

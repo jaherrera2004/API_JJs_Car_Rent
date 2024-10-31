@@ -21,5 +21,7 @@ public interface UsuarioIRepository {
 
     UsuarioEntity findById(Integer id);
 
+    UsuarioEntity findByUsername(String username);
+
 
 }

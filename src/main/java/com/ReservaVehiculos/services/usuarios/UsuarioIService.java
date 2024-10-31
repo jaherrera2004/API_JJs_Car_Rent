@@ -15,4 +15,6 @@ public interface UsuarioIService {
     List<UsuarioDto> obtenerListaUsuarios();
 
     UsuarioDto obtenerUsuarioPorId(Integer id);
+
+    UsuarioDto obtenerUsuarioPorUsername(String usernmae);
 }

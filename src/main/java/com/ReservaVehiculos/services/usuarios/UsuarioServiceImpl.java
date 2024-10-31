@@ -9,6 +9,7 @@ import com.ReservaVehiculos.repository.usuarios.UsuarioIRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class UsuarioServiceImpl implements UsuarioIService {
 
     private final UsuarioMapper usuarioMapper;
     private final UsuarioIRepository usuarioIRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void registrarUsuario(UsuarioRequest request) {
@@ -71,6 +73,11 @@ public class UsuarioServiceImpl implements UsuarioIService {
         return usuarioMapper.toDto(usuarioIRepository.findById(id));
     }
 
+    @Override
+    public UsuarioDto obtenerUsuarioPorUsername(String username) {
+        return usuarioMapper.toDto(usuarioIRepository.findByUsername(username));
+    }
+
     private UsuarioDto construirUsuario(UsuarioRequest request) {
         return UsuarioDto.builder()
                 .nombre(request.getNombre())
@@ -78,9 +85,10 @@ public class UsuarioServiceImpl implements UsuarioIService {
                 .cedula(request.getCedula())
                 .edad(request.getEdad())
                 .email(request.getEmail())
+                .username(request.getUsername())
                 .telefono(request.getTelefono())
                 .activo(true)
-                .contrasenia(request.getContrasenia())
+                .contrasenia(passwordEncoder.encode(request.getContrasenia()))
                 .idRol(1)
                 .build();
     }

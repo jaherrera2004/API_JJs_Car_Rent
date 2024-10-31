@@ -16,12 +16,13 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
     @Override
     public void save(UsuarioEntity usuarioEntity) {
 
-        String sql = "CALL registrar_usuario(?,?,?,?,?,?,?,?,?);";
+        String sql = "CALL registrar_usuario(?,?,?,?,?,?,?,?,?,?);";
 
         jdbcTemplate.update(sql, usuarioEntity.getCedula(),
                 usuarioEntity.getNombre(),
                 usuarioEntity.getApellido(),
                 usuarioEntity.getEdad(),
+                usuarioEntity.getUsername(),
                 usuarioEntity.getEmail(),
                 usuarioEntity.getTelefono(),
                 usuarioEntity.getContrasenia(),
@@ -40,8 +41,8 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
     @Override
     public void activarUsuario(Integer id) {
 
-        String sql= "CALL activar_usuario(?);";
-        jdbcTemplate.update(sql,id);
+        String sql = "CALL activar_usuario(?);";
+        jdbcTemplate.update(sql, id);
 
     }
 
@@ -99,7 +100,7 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
     public UsuarioEntity findById(Integer id) {
         String sql = "SELECT * FROM ver_lista_usuarios WHERE id=?;";
 
-        UsuarioEntity usuarioEntity= jdbcTemplate.queryForObject(sql,(rs,rowNum)->{
+        UsuarioEntity usuarioEntity = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
             UsuarioEntity usuarioEntityAux = new UsuarioEntity();
             usuarioEntityAux.setId(rs.getInt("id"));
             usuarioEntityAux.setCedula(rs.getString("cedula"));
@@ -111,7 +112,28 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
             usuarioEntityAux.setActivo(rs.getBoolean("activo"));
 
             return usuarioEntityAux;
-        },id);
+        }, id);
+
+        return usuarioEntity;
+    }
+
+    @Override
+    public UsuarioEntity findByUsername(String username) {
+        String sql = "SELECT * FROM ver_lista_usuarios WHERE username=?;";
+
+        UsuarioEntity usuarioEntity = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+            UsuarioEntity usuarioEntityAux = new UsuarioEntity();
+            usuarioEntityAux.setId(rs.getInt("id"));
+            usuarioEntityAux.setCedula(rs.getString("cedula"));
+            usuarioEntityAux.setNombre(rs.getString("nombre"));
+            usuarioEntityAux.setApellido(rs.getString("apellido"));
+            usuarioEntityAux.setEmail(rs.getString("email"));
+            usuarioEntityAux.setTelefono(rs.getString("telefono"));
+            usuarioEntityAux.setEdad(rs.getInt("edad"));
+            usuarioEntityAux.setActivo(rs.getBoolean("activo"));
+
+            return usuarioEntityAux;
+        }, username);
 
         return usuarioEntity;
     }
