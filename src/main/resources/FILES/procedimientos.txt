@@ -95,3 +95,25 @@ BEGIN
 END //
 
 DELIMITER ;
+------------------------------------------------------------------------------------------------------------------------
+DELIMITER //
+
+CREATE PROCEDURE agregar_vehiculo(
+    IN placa VARCHAR(10),
+    IN anio INT,
+    IN kilometraje FLOAT,
+    IN valorDia FLOAT,
+    IN color VARCHAR(20),
+    IN idModelo INT,
+    IN activo BOOLEAN
+)
+BEGIN
+    INSERT INTO tbl_vehiculos (
+        placa, anio, kilometraje, valor_dia, color, id_modelo, activo
+    )
+    VALUES (
+        placa, anio, kilometraje, valorDia, color, idModelo, activo
+    );
+END //
+
+DELIMITER ;

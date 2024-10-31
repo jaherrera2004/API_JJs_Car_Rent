@@ -1,4 +1,4 @@
-package com.ReservaVehiculos.mappers;
+package com.ReservaVehiculos.utils.mappers;
 
 import com.ReservaVehiculos.models.dto.MarcaDto;
 import com.ReservaVehiculos.models.entity.MarcaEntity;

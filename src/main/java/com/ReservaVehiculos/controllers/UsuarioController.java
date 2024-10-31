@@ -1,8 +1,9 @@
-package com.ReservaVehiculos.controllers.usuarios;
+package com.ReservaVehiculos.controllers;
 
 import com.ReservaVehiculos.models.dto.UsuarioDto;
 import com.ReservaVehiculos.models.request.usuario.UsuarioRequest;
 import com.ReservaVehiculos.services.usuarios.UsuarioIService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class UsuarioController {
     private final UsuarioIService usuarioIService;
 
     @PostMapping
-    public void registrarUsuario(@RequestBody UsuarioRequest request){
+    public void registrarUsuario(@RequestBody @Valid  UsuarioRequest request){
         usuarioIService.registrarUsuario(request);
     }
 

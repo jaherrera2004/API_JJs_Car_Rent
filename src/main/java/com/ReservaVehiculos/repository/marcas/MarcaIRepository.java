@@ -27,5 +27,7 @@ public interface MarcaIRepository {
 
     boolean tieneLogo(Integer id);
 
+    boolean tieneLogo(String logo);
+
     void eliminarLogo(Integer id);
 }

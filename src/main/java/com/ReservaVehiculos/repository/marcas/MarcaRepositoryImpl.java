@@ -1,6 +1,6 @@
 package com.ReservaVehiculos.repository.marcas;
 
-import com.ReservaVehiculos.mappers.MarcaMapper;
+import com.ReservaVehiculos.utils.mappers.MarcaMapper;
 import com.ReservaVehiculos.models.entity.MarcaEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -104,6 +104,15 @@ public class MarcaRepositoryImpl implements MarcaIRepository {
         String sql = "SELECT COUNT(*) FROM tbl_marcas WHERE id = ? AND logo IS NOT NULL";
 
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
+
+        return count != null && count > 0;
+    }
+
+    @Override
+    public boolean tieneLogo(String logo) {
+        String sql = "SELECT COUNT(*) FROM tbl_marcas WHERE logo = ? AND logo IS NOT NULL";
+
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, logo);
 
         return count != null && count > 0;
     }

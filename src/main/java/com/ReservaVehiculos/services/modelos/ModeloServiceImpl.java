@@ -1,12 +1,12 @@
 package com.ReservaVehiculos.services.modelos;
 
-import com.ReservaVehiculos.mappers.ModeloMapper;
+import com.ReservaVehiculos.utils.mappers.ModeloMapper;
 import com.ReservaVehiculos.models.dto.ModeloDto;
 import com.ReservaVehiculos.models.exceptions.HttpGenericException;
 import com.ReservaVehiculos.models.request.modelo.ModeloRequest;
 import com.ReservaVehiculos.repository.marcas.MarcaIRepository;
 import com.ReservaVehiculos.repository.modelos.ModeloIRepository;
-import com.ReservaVehiculos.repository.vehiculos.TipoVehiculoIRepository;
+import com.ReservaVehiculos.repository.tipoVehiculos.TipoVehiculoIRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

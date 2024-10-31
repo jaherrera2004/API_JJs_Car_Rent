@@ -1,4 +1,4 @@
-package com.ReservaVehiculos.repository.vehiculos;
+package com.ReservaVehiculos.repository.tipoVehiculos;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;

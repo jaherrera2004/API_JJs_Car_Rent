@@ -1,6 +1,6 @@
 package com.ReservaVehiculos.services.marcas;
 
-import com.ReservaVehiculos.mappers.MarcaMapper;
+import com.ReservaVehiculos.utils.mappers.MarcaMapper;
 import com.ReservaVehiculos.models.dto.MarcaDto;
 import com.ReservaVehiculos.models.exceptions.HttpGenericException;
 import com.ReservaVehiculos.models.request.marcas.MarcaLogoRequest;
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +75,10 @@ public class MarcaServiceImpl implements MarcaIService {
     @Override
     public void agregarLogo(MarcaLogoRequest request) throws IOException {
 
+       if(marcaIRepository.tieneLogo(request.getMarca())){
+           throw new HttpGenericException(HttpStatus.BAD_REQUEST,"La marca ya tiene foto.");
+       }
+
         if (!marcaIRepository.existsByMarca(request.getMarca())) {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "La marca que has ingresado no existe");
         }
@@ -83,6 +86,7 @@ public class MarcaServiceImpl implements MarcaIService {
         if (!archivoUtil.esExtensionValida(request.getLogo())) {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Debes enviar archivos en formato jpg, png o jepg");
         }
+
 
         if (!archivoUtil.esTamanioValido(request.getLogo())) {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "la foto de demasiado grande");
@@ -146,7 +150,6 @@ public class MarcaServiceImpl implements MarcaIService {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
             MarcaConLogoResponse marcaConLogo = MarcaConLogoResponse.builder()
                     .marcaInfo(marcaMapper.toDto(marcaIRepository.findById(marcaDto.getId())))
                     .mediaType("image/"+extension)

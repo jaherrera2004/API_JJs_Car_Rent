@@ -1,4 +1,4 @@
-package com.ReservaVehiculos.mappers;
+package com.ReservaVehiculos.utils.mappers;
 
 import com.ReservaVehiculos.models.dto.UsuarioDto;
 import com.ReservaVehiculos.models.entity.UsuarioEntity;

@@ -1,12 +1,13 @@
 package com.ReservaVehiculos.utils;
 
 
+import org.imgscalr.Scalr;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
@@ -19,9 +20,14 @@ public class ArchivoUtil {
     private static final List<String> EXTENSIONES_VALIDAS = Arrays.asList("jpg", "jpeg", "png", "webp");
     private final static float TAMANIO_MAXIMO = 2 * 1024 * 1024; // 2MB
 
+
+    private String cambiarNombreArchivo(String nombreOriginal){
+        return UUID.randomUUID().toString() + "." + obtenerExtension(nombreOriginal);
+    }
+    
     public String subirArchivo(MultipartFile foto) throws IOException {
 
-        String nuevoNombre = UUID.randomUUID().toString() + "." + obtenerExtension(foto.getOriginalFilename());
+        String nuevoNombre = cambiarNombreArchivo(foto.getOriginalFilename());
 
         File directorio = new File(ArchivoUtil.UBICACION);
         if (!directorio.exists()) {

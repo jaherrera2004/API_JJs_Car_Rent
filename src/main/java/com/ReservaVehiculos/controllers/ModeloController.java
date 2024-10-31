@@ -1,8 +1,9 @@
-package com.ReservaVehiculos.controllers.modelos;
+package com.ReservaVehiculos.controllers;
 
 import com.ReservaVehiculos.models.dto.ModeloDto;
 import com.ReservaVehiculos.models.request.modelo.ModeloRequest;
 import com.ReservaVehiculos.services.modelos.ModeloIService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,7 @@ public class ModeloController {
     private final ModeloIService modeloIService;
 
     @PostMapping
-    public void agregarModelo(@RequestBody ModeloRequest modeloRequest){
+    public void agregarModelo(@RequestBody @Valid  ModeloRequest modeloRequest){
         modeloIService.agregarModelo(modeloRequest);
     }
 

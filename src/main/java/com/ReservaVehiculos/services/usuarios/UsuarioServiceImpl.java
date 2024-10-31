@@ -1,7 +1,7 @@
 package com.ReservaVehiculos.services.usuarios;
 
 
-import com.ReservaVehiculos.mappers.UsuarioMapper;
+import com.ReservaVehiculos.utils.mappers.UsuarioMapper;
 import com.ReservaVehiculos.models.dto.UsuarioDto;
 import com.ReservaVehiculos.models.exceptions.HttpGenericException;
 import com.ReservaVehiculos.models.request.usuario.UsuarioRequest;
@@ -31,10 +31,6 @@ public class UsuarioServiceImpl implements UsuarioIService {
 
         if (usuarioIRepository.existsByCedula(request.getCedula())) {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Ya hay un usuario registrado con esta cedula");
-        }
-
-        if (request.getEdad() <= 17) {
-            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Debes ser mayor de edad para registrarte");
         }
 
         UsuarioDto usuarioDto = construirUsuario(request);
