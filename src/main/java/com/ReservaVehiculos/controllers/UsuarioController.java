@@ -22,7 +22,7 @@ public class UsuarioController {
         usuarioIService.registrarUsuario(request);
     }
 
-    @PreAuthorize("hasPermission('usuario:desactivar-usuario')")
+    @PreAuthorize("hasAuthority('usuario:desactivar-usuario')")
     @DeleteMapping("/{id}")
     public void desactivarUsuario(@PathVariable Integer id){
         usuarioIService.desactivarUsuario(id);
