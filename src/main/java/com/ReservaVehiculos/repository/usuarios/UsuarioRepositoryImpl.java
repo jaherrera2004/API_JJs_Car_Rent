@@ -119,7 +119,7 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
 
     @Override
     public UsuarioEntity findByUsername(String username) {
-        String sql = "SELECT * FROM ver_lista_usuarios WHERE username=?;";
+        String sql = "SELECT * FROM tbl_usuarios WHERE username=?;";
 
         UsuarioEntity usuarioEntity = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
             UsuarioEntity usuarioEntityAux = new UsuarioEntity();
@@ -127,8 +127,11 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
             usuarioEntityAux.setCedula(rs.getString("cedula"));
             usuarioEntityAux.setNombre(rs.getString("nombre"));
             usuarioEntityAux.setApellido(rs.getString("apellido"));
+            usuarioEntityAux.setUsername(rs.getString("username"));
             usuarioEntityAux.setEmail(rs.getString("email"));
+            usuarioEntityAux.setContrasenia(rs.getString("contrasenia"));
             usuarioEntityAux.setTelefono(rs.getString("telefono"));
+            usuarioEntityAux.setIdRol(rs.getInt("id_rol"));
             usuarioEntityAux.setEdad(rs.getInt("edad"));
             usuarioEntityAux.setActivo(rs.getBoolean("activo"));
 

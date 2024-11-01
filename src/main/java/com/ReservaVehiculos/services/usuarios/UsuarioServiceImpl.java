@@ -89,7 +89,7 @@ public class UsuarioServiceImpl implements UsuarioIService {
                 .telefono(request.getTelefono())
                 .activo(true)
                 .contrasenia(passwordEncoder.encode(request.getContrasenia()))
-                .idRol(1)
+                .idRol(2)
                 .build();
     }
 }

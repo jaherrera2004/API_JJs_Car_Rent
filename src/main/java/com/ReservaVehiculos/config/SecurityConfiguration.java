@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -34,9 +36,8 @@ public class SecurityConfiguration {
      * Lista blanca
      * */
     protected static final String[] URI_WHITE_LIST = new String[] {
-            "/api/v1/autenticacion",
-            "/api/v1/usuarios",
-            "/api/v1/configuracion"
+            "/api/v1/auth",
+            "/api/v1/usuarios"
     };
 
     @Bean
