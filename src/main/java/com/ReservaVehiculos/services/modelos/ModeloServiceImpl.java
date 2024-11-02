@@ -11,28 +11,30 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
-public class ModeloServiceImpl implements ModeloIService{
+public class ModeloServiceImpl implements ModeloIService {
 
     private final ModeloIRepository modeloIRepository;
     private final ModeloMapper modeloMapper;
     private final MarcaIRepository marcaIRepository;
-    private  final TipoVehiculoIRepository tipoVehiculoIRepository;
+    private final TipoVehiculoIRepository tipoVehiculoIRepository;
 
     @Override
     public void agregarModelo(ModeloRequest request) {
 
-        if(!marcaIRepository.existsById(request.getIdMarca())){
-            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"No hemos encontrado la marca del modelo");
+        if (!marcaIRepository.existsById(request.getIdMarca())) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "No hemos encontrado la marca del modelo");
         }
 
-        if(modeloIRepository.existsByModelo(request.getModelo())){
-            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"Ya existe este modelo");
+        if (modeloIRepository.existsByModelo(request.getModelo())) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Ya existe este modelo");
         }
 
-        if(!tipoVehiculoIRepository.existsById(request.getIdTipoVehiculo())){
-            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"No hemos encontrado el tipo de vehiculo del modelo");
+        if (!tipoVehiculoIRepository.existsById(request.getIdTipoVehiculo())) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "No hemos encontrado el tipo de vehiculo del modelo");
         }
 
         ModeloDto modeloDto = construirModelo(request);
@@ -44,14 +46,21 @@ public class ModeloServiceImpl implements ModeloIService{
     @Override
     public ModeloDto obtenerPorId(Integer id) {
 
-        if(!modeloIRepository.existsById(id)){
-            throw  new HttpGenericException(HttpStatus.BAD_REQUEST,"No hemos encontrado ese modelo");
+        if (!modeloIRepository.existsById(id)) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "No hemos encontrado ese modelo");
         }
 
         return modeloMapper.toDto(modeloIRepository.findById(id));
     }
 
-    private ModeloDto construirModelo(ModeloRequest request){
+    @Override
+    public List<ModeloDto> obtenerListaModelos() {
+        return modeloIRepository.findAll().stream()
+                .map(modeloMapper::toDto)
+                .toList();
+    }
+
+    private ModeloDto construirModelo(ModeloRequest request) {
         return ModeloDto.builder()
                 .modelo(request.getModelo())
                 .idMarca(request.getIdMarca())

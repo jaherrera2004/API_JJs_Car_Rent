@@ -27,6 +27,10 @@ public class UsuarioServiceImpl implements UsuarioIService {
     @Override
     public void registrarUsuario(UsuarioRequest request) {
 
+        if(usuarioIRepository.existsByUsername(request.getUsername())){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Este username ya esta registrado");
+        }
+
         if (usuarioIRepository.existsByEmail(request.getEmail())) {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Ya hay un usuario registrado con este correo");
         }

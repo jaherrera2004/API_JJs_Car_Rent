@@ -27,9 +27,7 @@ public class MarcaController {
 
     @PreAuthorize("hasAuthority('marca:agregar')")
     @PostMapping
-    public void agregarMarca(@RequestBody @Valid MarcaRequest request) {
-        marcaIService.agregarMarca(request);
-    }
+    public void agregarMarca(@RequestBody @Valid MarcaRequest request) { marcaIService.agregarMarca(request); }
 
     @PreAuthorize("hasAuthority('marca:obtener-lista')")
     @GetMapping

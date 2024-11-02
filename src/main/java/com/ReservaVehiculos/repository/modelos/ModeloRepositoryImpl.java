@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class ModeloRepositoryImpl implements ModeloIRepository {
@@ -41,7 +43,7 @@ public class ModeloRepositoryImpl implements ModeloIRepository {
 
     @Override
     public ModeloEntity findById(Integer id) {
-        String sql = "SELECT * FROM ver_lista_modelos";
+        String sql = "SELECT * FROM ver_lista_modelos WHERE id=?";
         ModeloEntity modeloEntity = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
 
             ModeloEntity entity = new ModeloEntity();
@@ -54,5 +56,20 @@ public class ModeloRepositoryImpl implements ModeloIRepository {
             return entity;
         }, id);
         return modeloEntity;
+    }
+
+    @Override
+    public List<ModeloEntity> findAll() {
+        String sql = "SELECT * FROM ver_lista_modelos;";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            ModeloEntity modelo = new ModeloEntity();
+            modelo.setId(rs.getInt("id"));
+            modelo.setModelo(rs.getString("modelo"));
+            modelo.setActivo(rs.getBoolean("activo"));
+            modelo.setIdMarca(rs.getInt("id_marca"));
+            modelo.setIdTipoVehiculo(rs.getInt("id_tipo_vehiculo"));
+            return modelo;
+        });
     }
 }

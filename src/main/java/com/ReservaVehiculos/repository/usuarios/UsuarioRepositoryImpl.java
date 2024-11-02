@@ -85,6 +85,7 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
             usuarioEntity.setCedula(rs.getString("cedula"));
             usuarioEntity.setNombre(rs.getString("nombre"));
             usuarioEntity.setApellido(rs.getString("apellido"));
+            usuarioEntity.setUsername(rs.getString("username"));
             usuarioEntity.setEmail(rs.getString("email"));
             usuarioEntity.setTelefono(rs.getString("telefono"));
             usuarioEntity.setEdad(rs.getInt("edad"));
@@ -106,6 +107,7 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
             usuarioEntityAux.setCedula(rs.getString("cedula"));
             usuarioEntityAux.setNombre(rs.getString("nombre"));
             usuarioEntityAux.setApellido(rs.getString("apellido"));
+            usuarioEntityAux.setUsername(rs.getString("username"));
             usuarioEntityAux.setEmail(rs.getString("email"));
             usuarioEntityAux.setTelefono(rs.getString("telefono"));
             usuarioEntityAux.setEdad(rs.getInt("edad"));
@@ -139,5 +141,13 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
         }, username);
 
         return usuarioEntity;
+    }
+    @Override
+    public boolean existsByUsername(String username) {
+
+        String sql = "SELECT COUNT(*) FROM tbl_usuarios WHERE username=?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, username);
+
+        return count != null && count > 0;
     }
 }

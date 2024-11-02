@@ -5,7 +5,7 @@ import lombok.*;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class UsuarioEntity {
-
+    
     private Integer id;
     private String cedula;
     private String nombre;
