@@ -13,6 +13,7 @@ public class CustomUserDetails implements UserDetails {
     private final Integer userId;
     private final String username;
     private final String password;
+    private final String rol;
     private final List<GrantedAuthority> authorities;
 
     @Override

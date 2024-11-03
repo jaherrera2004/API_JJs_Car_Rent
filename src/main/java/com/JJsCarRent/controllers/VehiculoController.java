@@ -2,6 +2,7 @@ package com.JJsCarRent.controllers;
 
 import com.JJsCarRent.models.request.vehiculo.VehiculoRequest;
 import com.JJsCarRent.services.vehiculos.VehiculoIService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +18,7 @@ public class VehiculoController {
 
     private final VehiculoIService vehiculoIService;
 
+    @Operation(summary = "Agregar vehiculo nuevo")
     @PreAuthorize("hasAuthority('vehiculo:agregar-vehiculo')")
     @PostMapping
     public void agregarVehiculo(@RequestBody @Valid VehiculoRequest request) {

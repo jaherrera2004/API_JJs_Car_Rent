@@ -25,15 +25,21 @@ public class JwtService {
         return claims.get("permisos", List.class);
     }
 
+    public String extractRol(String token){
+        Claims claims = extractAllClaims(token);
+        return claims.get("rol", String.class);
+    }
+
     public Integer extractUserId(String token) {
         Claims claims = extractAllClaims(token);
         return claims.get("userId", Integer.class);
     }
 
-    public String generateToken(UserDetails userDetails, List<String> permisos, Integer userId) {
+    public String generateToken(UserDetails userDetails, List<String> permisos, Integer userId, String rol) {
         Map<String, Object> claims = Map.of(
                 "permisos", permisos,
-                "userId", userId // Añadir userId a los claims
+                "userId", userId,
+                "rol",rol
         );
         return createToken(claims, userDetails.getUsername());
     }

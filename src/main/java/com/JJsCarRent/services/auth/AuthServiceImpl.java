@@ -45,11 +45,10 @@ public class AuthServiceImpl implements AuthIService{
                 .toList();
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>(authorities);
-        CustomUserDetails customUserDetails = new CustomUserDetails(datosUsuario.getId(), request.getUsuario(), "", grantedAuthorities);
+        String rol =rolIRepository.findRolById(datosUsuario.getIdRol());
+        CustomUserDetails customUserDetails = new CustomUserDetails(datosUsuario.getId(), request.getUsuario(), "",rol, grantedAuthorities);
 
-        String token = jwtService.generateToken(customUserDetails, permisos, datosUsuario.getId());
-        String rol =rolIRepository.findRolById(datosUsuario.getIdRol()) ;
-
+        String token = jwtService.generateToken(customUserDetails, permisos, datosUsuario.getId(),rol);
         return construirAuthResponse(token,datosUsuario,rol);
     }
     private AuthResponse construirAuthResponse(String token, UsuarioDto datosUsuario,String rol){

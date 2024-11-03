@@ -24,24 +24,28 @@ public class UsuarioController {
         usuarioIService.registrarUsuario(request);
     }
 
+    @Operation(summary = "Desactivar usuario")
     @PreAuthorize("hasAuthority('usuario:desactivar-usuario')")
     @DeleteMapping("/{id}")
     public void desactivarUsuario(@PathVariable Integer id){
         usuarioIService.desactivarUsuario(id);
     }
 
+    @Operation(summary = "Activar usuario")
     @PreAuthorize("hasAuthority('usuario:activar-usuario')")
     @PutMapping("/{id}")
     public void activarUsuario(@PathVariable Integer id){
         usuarioIService.activarUsuario(id);
     }
 
+    @Operation(summary = "Traer datos del usuario por su id")
     @PreAuthorize("hasAuthority('usuario:obtener-usuario')")
     @GetMapping("/{id}")
     public UsuarioDto obtenerUsuarioPorId(@PathVariable Integer id){
         return usuarioIService.obtenerUsuarioPorId(id);
     }
 
+    @Operation(summary = "Traer lita de usuarios")
     @PreAuthorize("hasAuthority('usuario:obtener-lista-usuarios')")
     @GetMapping
     public List<UsuarioDto>obtenerListaUsuarios(){

@@ -49,6 +49,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (jwtService.validateToken(jwt, usuarioOpt)) {
                 var permisos = jwtService.extractPermisos(jwt);
                 Integer userId = jwtService.extractUserId(jwt);
+                String rol = jwtService.extractRol(jwt);
 
                 var authorities = permisos.stream()
                         .map(SimpleGrantedAuthority::new)
@@ -56,7 +57,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                 List<GrantedAuthority> grantedAuthorities = new ArrayList<>(authorities);
 
-                CustomUserDetails userDetails = new CustomUserDetails(userId,username, "", grantedAuthorities);
+                CustomUserDetails userDetails = new CustomUserDetails(userId,username, "",rol, grantedAuthorities);
 
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
