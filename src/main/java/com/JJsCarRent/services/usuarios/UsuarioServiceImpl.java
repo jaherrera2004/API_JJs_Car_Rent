@@ -51,6 +51,15 @@ public class UsuarioServiceImpl implements UsuarioIService {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "No encontramos el usuario con ese id");
         }
 
+        UsuarioDto usuarioDto= usuarioMapper.toDto(usuarioIRepository.findById(id));
+        if(!usuarioDto.isActivo()){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Este usuario ya esta desactivo");
+        }
+
+        if(usuarioDto.getIdRol()==1){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "No puedes desactivar a un usuario");
+        }
+
         usuarioIRepository.desactivarUsuario(id);
     }
 

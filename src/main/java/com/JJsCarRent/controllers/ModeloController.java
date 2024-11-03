@@ -37,9 +37,4 @@ public class ModeloController {
     public List<ModeloDto> obtenerListaModelos(){
         return null;
     }
-
-    @GetMapping("/prueba")
-    public String prueba (){
-        return "probando";
-    }
 }

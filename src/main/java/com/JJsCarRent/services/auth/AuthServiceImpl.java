@@ -22,7 +22,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class AuthServiceImpl implements AuthIService{
+public class AuthServiceImpl implements AuthIService {
 
     private final UsuarioIRepository usuarioIRepository;
     private final UsuarioMapper usuarioMapper;
@@ -34,24 +34,25 @@ public class AuthServiceImpl implements AuthIService{
     public AuthResponse iniciarSesion(AuthRequest request) {
         UsuarioDto datosUsuario = usuarioMapper.toDto(usuarioIRepository.findByUsername(request.getUsuario()));
 
-        if(!passwordEncoder.matches(request.getContrasenia(), datosUsuario.getContrasenia())){
+        if (datosUsuario == null || !passwordEncoder.matches(request.getContrasenia(), datosUsuario.getContrasenia())) {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Username o contraseña incorrectos");
         }
 
-        List<String> permisos= rolIRepository.findPermisosByIdRol(datosUsuario.getIdRol());
+        List<String> permisos = rolIRepository.findPermisosByIdRol(datosUsuario.getIdRol());
         List<SimpleGrantedAuthority> authorities = permisos
                 .stream()
                 .map(SimpleGrantedAuthority::new)
                 .toList();
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>(authorities);
-        String rol =rolIRepository.findRolById(datosUsuario.getIdRol());
-        CustomUserDetails customUserDetails = new CustomUserDetails(datosUsuario.getId(), request.getUsuario(), "",rol, grantedAuthorities);
+        String rol = rolIRepository.findRolById(datosUsuario.getIdRol());
+        CustomUserDetails customUserDetails = new CustomUserDetails(datosUsuario.getId(), request.getUsuario(), "", rol, grantedAuthorities);
 
-        String token = jwtService.generateToken(customUserDetails, permisos, datosUsuario.getId(),rol);
-        return construirAuthResponse(token,datosUsuario,rol);
+        String token = jwtService.generateToken(customUserDetails, permisos, datosUsuario.getId(), rol);
+        return construirAuthResponse(token, datosUsuario, rol);
     }
-    private AuthResponse construirAuthResponse(String token, UsuarioDto datosUsuario,String rol){
+
+    private AuthResponse construirAuthResponse(String token, UsuarioDto datosUsuario, String rol) {
         return AuthResponse.builder()
                 .accessToken(token)
                 .usuario(UsuarioDatosResponse.builder()

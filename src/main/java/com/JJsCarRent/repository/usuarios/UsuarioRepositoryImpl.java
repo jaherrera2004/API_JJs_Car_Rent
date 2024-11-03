@@ -123,7 +123,7 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
     public UsuarioEntity findByUsername(String username) {
         String sql = "SELECT * FROM tbl_usuarios WHERE username=?;";
 
-        UsuarioEntity usuarioEntity = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+        List<UsuarioEntity> usuarios = jdbcTemplate.query(sql, (rs, rowNum) -> {
             UsuarioEntity usuarioEntityAux = new UsuarioEntity();
             usuarioEntityAux.setId(rs.getInt("id"));
             usuarioEntityAux.setCedula(rs.getString("cedula"));
@@ -140,7 +140,7 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
             return usuarioEntityAux;
         }, username);
 
-        return usuarioEntity;
+        return usuarios.isEmpty() ? null : usuarios.get(0);
     }
     @Override
     public boolean existsByUsername(String username) {
