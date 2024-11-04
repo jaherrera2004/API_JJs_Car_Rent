@@ -131,7 +131,7 @@ public class UsuarioServiceImpl implements UsuarioIService {
                 .nombre(dto.getNombre())
                 .apellido(dto.getApellido())
                 .email(dto.getEmail())
-                .username(dto.getCedula())
+                .username(dto.getUsername())
                 .telefono(dto.getTelefono())
                 .rol(rolIRepository.findRolById(dto.getIdRol()))
                 .edad(dto.getEdad())
