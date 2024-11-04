@@ -76,7 +76,7 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
 
     @Override
     public List<UsuarioEntity> findAll() {
-        String sql = "SELECT * FROM ver_lista_usuarios;";
+        String sql = "SELECT * FROM ver_lista_usuarios WHERE activo=true AND id_rol=2;";
 
         List<UsuarioEntity> listaUsuariosEntity = jdbcTemplate.query(sql, (rs, rowNum) -> {
 
@@ -88,6 +88,7 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
             usuarioEntity.setUsername(rs.getString("username"));
             usuarioEntity.setEmail(rs.getString("email"));
             usuarioEntity.setTelefono(rs.getString("telefono"));
+            usuarioEntity.setIdRol(rs.getInt("id_rol"));
             usuarioEntity.setEdad(rs.getInt("edad"));
             usuarioEntity.setActivo(rs.getBoolean("activo"));
 
@@ -109,6 +110,7 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
             usuarioEntityAux.setApellido(rs.getString("apellido"));
             usuarioEntityAux.setUsername(rs.getString("username"));
             usuarioEntityAux.setEmail(rs.getString("email"));
+            usuarioEntityAux.setIdRol(rs.getInt("id_rol"));
             usuarioEntityAux.setTelefono(rs.getString("telefono"));
             usuarioEntityAux.setEdad(rs.getInt("edad"));
             usuarioEntityAux.setActivo(rs.getBoolean("activo"));
@@ -147,6 +149,14 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
 
         String sql = "SELECT COUNT(*) FROM tbl_usuarios WHERE username=?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, username);
+
+        return count != null && count > 0;
+    }
+
+    @Override
+    public boolean existsByTelefono(String telefono) {
+        String sql = "SELECT COUNT(*) FROM tbl_usuarios WHERE telefono=?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, telefono);
 
         return count != null && count > 0;
     }

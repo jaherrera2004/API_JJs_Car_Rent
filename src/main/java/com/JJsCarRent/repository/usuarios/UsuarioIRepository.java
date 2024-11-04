@@ -24,4 +24,6 @@ public interface UsuarioIRepository {
     UsuarioEntity findByUsername(String username);
 
     boolean existsByUsername(String username);
+
+    boolean existsByTelefono(String telefono);
 }

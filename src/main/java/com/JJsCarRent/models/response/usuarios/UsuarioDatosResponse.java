@@ -9,10 +9,13 @@ import lombok.Setter;
 @Builder
 public class UsuarioDatosResponse {
 
+    private Integer id;
+    private String cedula;
     private String email;
     private String username;
     private String nombre;
     private String apellido;
+    private String telefono;
     private String rol;
 
 }

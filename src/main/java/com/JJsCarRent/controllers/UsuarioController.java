@@ -2,6 +2,7 @@ package com.JJsCarRent.controllers;
 
 import com.JJsCarRent.models.dto.UsuarioDto;
 import com.JJsCarRent.models.request.usuario.UsuarioRequest;
+import com.JJsCarRent.models.response.usuarios.UsuarioDatosResponse;
 import com.JJsCarRent.services.usuarios.UsuarioIService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -41,14 +42,15 @@ public class UsuarioController {
     @Operation(summary = "Traer datos del usuario por su id")
     @PreAuthorize("hasAuthority('usuario:obtener-usuario')")
     @GetMapping("/{id}")
-    public UsuarioDto obtenerUsuarioPorId(@PathVariable Integer id){
+    public UsuarioDatosResponse obtenerUsuarioPorId(@PathVariable Integer id){
         return usuarioIService.obtenerUsuarioPorId(id);
     }
 
     @Operation(summary = "Traer lita de usuarios")
     @PreAuthorize("hasAuthority('usuario:obtener-lista-usuarios')")
     @GetMapping
-    public List<UsuarioDto>obtenerListaUsuarios(){
+    public List<UsuarioDatosResponse>obtenerListaUsuarios(){
         return usuarioIService.obtenerListaUsuarios();
     }
+
 }

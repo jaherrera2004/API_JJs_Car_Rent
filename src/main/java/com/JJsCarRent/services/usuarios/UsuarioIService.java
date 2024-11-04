@@ -2,6 +2,7 @@ package com.JJsCarRent.services.usuarios;
 
 import com.JJsCarRent.models.dto.UsuarioDto;
 import com.JJsCarRent.models.request.usuario.UsuarioRequest;
+import com.JJsCarRent.models.response.usuarios.UsuarioDatosResponse;
 
 import java.util.List;
 
@@ -12,9 +13,9 @@ public interface UsuarioIService {
 
     void activarUsuario(Integer id);
 
-    List<UsuarioDto> obtenerListaUsuarios();
+    List<UsuarioDatosResponse> obtenerListaUsuarios();
 
-    UsuarioDto obtenerUsuarioPorId(Integer id);
+    UsuarioDatosResponse obtenerUsuarioPorId(Integer id);
 
     UsuarioDto obtenerUsuarioPorUsername(String usernmae);
 }

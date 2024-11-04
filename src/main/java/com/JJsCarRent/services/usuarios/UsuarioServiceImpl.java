@@ -1,6 +1,8 @@
 package com.JJsCarRent.services.usuarios;
 
 
+import com.JJsCarRent.models.response.usuarios.UsuarioDatosResponse;
+import com.JJsCarRent.repository.roles.RolIRepository;
 import com.JJsCarRent.utils.mappers.UsuarioMapper;
 import com.JJsCarRent.models.dto.UsuarioDto;
 import com.JJsCarRent.models.exceptions.HttpGenericException;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +25,7 @@ public class UsuarioServiceImpl implements UsuarioIService {
 
     private final UsuarioMapper usuarioMapper;
     private final UsuarioIRepository usuarioIRepository;
+    private final RolIRepository rolIRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -37,6 +41,10 @@ public class UsuarioServiceImpl implements UsuarioIService {
 
         if (usuarioIRepository.existsByCedula(request.getCedula())) {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Ya hay un usuario registrado con esta cedula");
+        }
+
+        if(usuarioIRepository.existsByTelefono(request.getTelefono())){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Ya hay un usuario registrado con este telefono");
         }
 
         UsuarioDto usuarioDto = construirUsuario(request);
@@ -74,16 +82,26 @@ public class UsuarioServiceImpl implements UsuarioIService {
     }
 
     @Override
-    public List<UsuarioDto> obtenerListaUsuarios() {
-        return usuarioIRepository.findAll()
+    public List<UsuarioDatosResponse> obtenerListaUsuarios() {
+
+        List<UsuarioDto> listaUsuariosDto = usuarioIRepository.findAll()
                 .stream()
                 .map(usuarioMapper::toDto)
                 .collect(Collectors.toList());
+
+        List<UsuarioDatosResponse> listaUsuariosResponse = new ArrayList<>();
+
+        listaUsuariosDto.forEach(dto -> {
+            listaUsuariosResponse.add(construirResponse(dto));
+        });
+
+        return listaUsuariosResponse;
     }
 
     @Override
-    public UsuarioDto obtenerUsuarioPorId(Integer id) {
-        return usuarioMapper.toDto(usuarioIRepository.findById(id));
+    public UsuarioDatosResponse obtenerUsuarioPorId(Integer id) {
+        UsuarioDto usuarioDto = usuarioMapper.toDto(usuarioIRepository.findById(id));
+        return construirResponse(usuarioDto);
     }
 
     @Override
@@ -103,6 +121,19 @@ public class UsuarioServiceImpl implements UsuarioIService {
                 .activo(true)
                 .contrasenia(passwordEncoder.encode(request.getContrasenia()))
                 .idRol(2)
+                .build();
+    }
+
+    private UsuarioDatosResponse construirResponse(UsuarioDto dto){
+        return UsuarioDatosResponse.builder()
+                .id(dto.getId())
+                .cedula(dto.getCedula())
+                .nombre(dto.getNombre())
+                .apellido(dto.getApellido())
+                .email(dto.getEmail())
+                .username(dto.getCedula())
+                .telefono(dto.getTelefono())
+                .rol(rolIRepository.findRolById(dto.getIdRol()))
                 .build();
     }
 }

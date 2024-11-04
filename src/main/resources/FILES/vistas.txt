@@ -1,5 +1,5 @@
 CREATE VIEW ver_lista_usuarios AS
-SELECT id,cedula,nombre, apellido, edad, email, telefono, activo FROM tbl_usuarios
+SELECT id,username,cedula,nombre, apellido, edad, email, id_rol, telefono, activo FROM tbl_usuarios;
 ------------------------------------------------------------------------------------------------------------------------
 CREATE VIEW ver_lista_marcas AS
 SELECT id,marca,activo FROM tbl_marcas;
