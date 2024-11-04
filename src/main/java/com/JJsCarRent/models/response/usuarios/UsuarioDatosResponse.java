@@ -16,6 +16,7 @@ public class UsuarioDatosResponse {
     private String nombre;
     private String apellido;
     private String telefono;
+    private Integer edad;
     private String rol;
 
 }

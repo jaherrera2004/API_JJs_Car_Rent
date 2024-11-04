@@ -134,6 +134,7 @@ public class UsuarioServiceImpl implements UsuarioIService {
                 .username(dto.getCedula())
                 .telefono(dto.getTelefono())
                 .rol(rolIRepository.findRolById(dto.getIdRol()))
+                .edad(dto.getEdad())
                 .build();
     }
 }
