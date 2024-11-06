@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Repository
 public class VehiculoRepositoryImpl implements VehiculoIRepository{
@@ -30,5 +32,23 @@ public class VehiculoRepositoryImpl implements VehiculoIRepository{
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, placa);
 
         return count != null && count > 0;
+    }
+
+    @Override
+    public List<VehiculoEntity> findAll() {
+        String sql = "SELECT * FROM ver_lista_vehiculos";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            VehiculoEntity vehiculo = new VehiculoEntity();
+            vehiculo.setId(rs.getInt("id"));
+            vehiculo.setPlaca(rs.getString("placa"));
+            vehiculo.setAnio(rs.getInt("anio"));
+            vehiculo.setKilometraje(rs.getFloat("kilometraje"));
+            vehiculo.setValorDia(rs.getFloat("valor_dia"));
+            vehiculo.setColor(rs.getString("color"));
+            vehiculo.setActivo(rs.getBoolean("activo"));
+            vehiculo.setIdModelo(rs.getInt("id_modelo"));
+            return vehiculo;
+        });
     }
 }

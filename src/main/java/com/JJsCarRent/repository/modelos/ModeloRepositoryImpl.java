@@ -72,4 +72,10 @@ public class ModeloRepositoryImpl implements ModeloIRepository {
             return modelo;
         });
     }
+
+    @Override
+    public String findModeloById(Integer id) {
+        String sql = "SELECT modelo FROM ver_lista_modelos WHERE id=?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, String.class);
+    }
 }

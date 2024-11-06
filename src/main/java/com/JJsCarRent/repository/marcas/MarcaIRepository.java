@@ -21,6 +21,8 @@ public interface MarcaIRepository {
 
     MarcaEntity findById(Integer id);
 
+    String findMarcaById(Integer id);
+
     void actualizarFoto(String foto, String marca);
 
     String obtenerLogoPorId(Integer id);

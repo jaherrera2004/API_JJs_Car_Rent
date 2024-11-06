@@ -6,4 +6,4 @@ SELECT id,marca,activo FROM tbl_marcas;
 ------------------------------------------------------------------------------------------------------------------------
 
 CREATE VIEW ver_lista_modelos AS
-SELECT id_marca,modelo,id_tipo_vehiculo FROM tbl_modelos;
+SELECT id,id_marca,modelo,id_tipo_vehiculo,activo FROM tbl_modelos;

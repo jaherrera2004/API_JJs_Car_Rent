@@ -2,6 +2,7 @@ package com.JJsCarRent.controllers;
 
 import com.JJsCarRent.models.dto.ModeloDto;
 import com.JJsCarRent.models.request.modelo.ModeloRequest;
+import com.JJsCarRent.models.response.modelos.ModeloDatosResponse;
 import com.JJsCarRent.services.modelos.ModeloIService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -33,9 +34,10 @@ public class ModeloController {
     }
 
     @Operation(summary = "Traer lista de modelos")
+    @PreAuthorize("hasAuthority('modelo:obtener-lista')")
     @GetMapping
-    public List<ModeloDto> obtenerListaModelos(){
-        return null;
+    public List<ModeloDatosResponse> obtenerListaModelos(){
+        return modeloIService.obtenerListaModelos();
     }
 
 }

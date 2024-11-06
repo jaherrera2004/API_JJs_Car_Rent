@@ -1,0 +1,48 @@
+DELIMITER //
+
+CREATE PROCEDURE agregar_tipo_vehiculo(
+    IN p_tipo VARCHAR(255),
+    IN p_descripcion VARCHAR(255)
+)
+BEGIN
+    INSERT INTO tbl_tipo_vehiculo (tipo, descripcion)
+    VALUES (p_tipo, p_descripcion);
+END //
+
+DELIMITER ;
+
+CREATE VIEW vista_tipos_vehiculos AS
+SELECT id, tipo, descripcion
+FROM tbl_tipo_vehiculo;
+
+CREATE VIEW ver_lista_vehiculos AS
+SELECT id, id_modelo, placa, anio, kilometraje, valor_dia, activo, color
+FROM tbl_vehiculos;
+
+DROP VIEW IF EXISTS ver_lista_modelos;
+
+CREATE VIEW ver_lista_modelos AS
+SELECT id,id_marca,modelo,id_tipo_vehiculo,activo FROM tbl_modelos;
+
+
+INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('tipo-vehiculo:agregar','Permiso para agregar un nuevo tipo de vehiculo');
+
+INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
+((SELECT id FROM tbl_permisos WHERE permiso='tipo-vehiculo:agregar'),1);
+
+INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('tipo-vehiculo:obtener-lista','Permiso para obtener lista de tipos de vehiculo');
+
+INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
+((SELECT id FROM tbl_permisos WHERE permiso='tipo-vehiculo:obtener-lista'),1);
+
+INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('modelo:obtener-lista','Permiso para obtener lista de modelos');
+
+INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
+((SELECT id FROM tbl_permisos WHERE permiso='modelo:obtener-lista'),1);
+
+INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('vehiculo:obtener-lista','Permiso para obtener la lista de vehiculos');
+
+INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
+((SELECT id FROM tbl_permisos WHERE permiso='vehiculo:obtener-lista'),1);
+
+

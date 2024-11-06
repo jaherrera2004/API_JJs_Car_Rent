@@ -15,4 +15,6 @@ public interface ModeloIRepository {
     ModeloEntity findById(Integer id);
 
     List<ModeloEntity> findAll();
+
+    String findModeloById(Integer id);
 }

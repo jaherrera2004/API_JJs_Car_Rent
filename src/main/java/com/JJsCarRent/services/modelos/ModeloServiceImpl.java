@@ -1,5 +1,6 @@
 package com.JJsCarRent.services.modelos;
 
+import com.JJsCarRent.models.response.modelos.ModeloDatosResponse;
 import com.JJsCarRent.utils.mappers.ModeloMapper;
 import com.JJsCarRent.models.dto.ModeloDto;
 import com.JJsCarRent.models.exceptions.HttpGenericException;
@@ -10,7 +11,9 @@ import com.JJsCarRent.repository.tipoVehiculos.TipoVehiculoIRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -54,10 +57,16 @@ public class ModeloServiceImpl implements ModeloIService {
     }
 
     @Override
-    public List<ModeloDto> obtenerListaModelos() {
-        return modeloIRepository.findAll().stream()
+    public List<ModeloDatosResponse> obtenerListaModelos() {
+
+        List<ModeloDto> listaModeloDto = modeloIRepository.findAll().stream()
                 .map(modeloMapper::toDto)
                 .toList();
+
+        List<ModeloDatosResponse> listaModeloDatosResponses= new ArrayList<>();
+        listaModeloDto.forEach(modeloDto -> listaModeloDatosResponses.add(construirModeloResponse(modeloDto)));
+
+        return listaModeloDatosResponses;
     }
 
     private ModeloDto construirModelo(ModeloRequest request) {
@@ -66,6 +75,16 @@ public class ModeloServiceImpl implements ModeloIService {
                 .idMarca(request.getIdMarca())
                 .idTipoVehiculo(request.getIdTipoVehiculo())
                 .activo(true)
+                .build();
+    }
+
+    private ModeloDatosResponse construirModeloResponse (ModeloDto modeloDto){
+        return ModeloDatosResponse.builder()
+                .id(modeloDto.getId())
+                .modelo(modeloDto.getModelo())
+                .marca(marcaIRepository.findMarcaById(modeloDto.getIdMarca()))
+                .tipoVehiculo(tipoVehiculoIRepository.findTipoById(modeloDto.getIdTipoVehiculo()))
+                .activo(modeloDto.isActivo())
                 .build();
     }
 }

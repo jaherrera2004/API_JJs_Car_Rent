@@ -86,6 +86,13 @@ public class MarcaRepositoryImpl implements MarcaIRepository {
     }
 
     @Override
+    public String findMarcaById(Integer id) {
+        String sql = "SELECT marca FROM ver_lista_marcas WHERE id=?";
+
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, String.class);
+    }
+
+    @Override
     public void actualizarFoto(String foto, String marca) {
         String sql = "UPDATE tbl_marcas SET logo = ? WHERE marca=?;";
 

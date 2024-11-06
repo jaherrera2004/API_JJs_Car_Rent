@@ -1,15 +1,15 @@
 package com.JJsCarRent.controllers;
 
 import com.JJsCarRent.models.request.vehiculo.VehiculoRequest;
+import com.JJsCarRent.models.response.vehiculos.VehiculosDatosResponse;
 import com.JJsCarRent.services.vehiculos.VehiculoIService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -24,5 +24,13 @@ public class VehiculoController {
     public void agregarVehiculo(@RequestBody @Valid VehiculoRequest request) {
         vehiculoIService.agregarVehiculo(request);
     }
+
+    @Operation(summary = "Obtener lista de vehiculos")
+    @PreAuthorize("hasAuthority('vehiculo:obtener-lista')")
+    @GetMapping
+    public List<VehiculosDatosResponse> obtenerListaVehiculos (){
+        return vehiculoIService.obtenerListaVehiculos();
+    }
+
 
 }
