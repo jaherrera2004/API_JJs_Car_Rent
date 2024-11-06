@@ -11,7 +11,7 @@ END //
 
 DELIMITER ;
 
-CREATE VIEW vista_tipos_vehiculos AS
+CREATE VIEW ver_tipos_vehiculos AS
 SELECT id, tipo, descripcion
 FROM tbl_tipo_vehiculo;
 
