@@ -22,10 +22,10 @@ public class TipoVehiculoController {
     @Operation(summary = "Agregar tipo de vehiculo")
     @PreAuthorize("hasAuthority('tipo-vehiculo:agregar')")
     @PostMapping
-    public ResponseEntity<Void> agregarTipoVehiculo(@RequestBody @Valid TipoVehiculoRequest request){
+    public ResponseEntity<String> agregarTipoVehiculo(@RequestBody @Valid TipoVehiculoRequest request){
         tipoVehiculoIService.agregarTipoVehiculo(request);
         return ResponseEntity.ok()
-                .build();
+                .body("Tipo de vehiculo agregado correctamente");
     }
 
     @Operation(summary = "Obtener lista de tipos de vehiculo")
