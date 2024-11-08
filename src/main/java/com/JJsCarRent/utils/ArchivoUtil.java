@@ -1,8 +1,6 @@
 package com.JJsCarRent.utils;
 
-
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -17,14 +15,13 @@ public class ArchivoUtil {
     private static final List<String> EXTENSIONES_VALIDAS = Arrays.asList("jpg", "jpeg", "png", "webp");
     private final static float TAMANIO_MAXIMO = 2 * 1024 * 1024; // 2MB
 
-
     private String cambiarNombreArchivo(String nombreOriginal){
         return UUID.randomUUID().toString() + "." + obtenerExtension(nombreOriginal);
     }
-    
-    public String subirArchivo(MultipartFile foto) throws IOException {
 
-        String nuevoNombre = cambiarNombreArchivo(foto.getOriginalFilename());
+    public String subirArchivo(byte[] contenido, String nombreOriginal) throws IOException {
+
+        String nuevoNombre = cambiarNombreArchivo(nombreOriginal);
 
         File directorio = new File(ArchivoUtil.UBICACION);
         if (!directorio.exists()) {
@@ -33,39 +30,38 @@ public class ArchivoUtil {
 
         File archivoDestino = new File(directorio, nuevoNombre);
 
-        foto.transferTo(archivoDestino);
+        try (FileOutputStream fos = new FileOutputStream(archivoDestino)) {
+            fos.write(contenido);
+        }
 
         return nuevoNombre;
     }
 
     public byte[] obtenerArchivo(String nombreArchivo) throws IOException {
-        File foto = new File(ArchivoUtil.UBICACION, nombreArchivo);
+        File archivo = new File(ArchivoUtil.UBICACION, nombreArchivo);
 
-        if (!foto.exists()) {
-            throw new FileNotFoundException("El archivo no fue encontrado" + nombreArchivo);
+        if (!archivo.exists()) {
+            throw new FileNotFoundException("El archivo no fue encontrado: " + nombreArchivo);
         }
-        return Files.readAllBytes(foto.toPath());
+        return Files.readAllBytes(archivo.toPath());
     }
 
     public String obtenerExtension(String nombreArchivo) {
-
         return nombreArchivo.substring(nombreArchivo.lastIndexOf(".") + 1);
     }
 
-    public void eliminarLogo(String nombreLogo) throws IOException{
+    public void eliminarLogo(String nombreLogo) throws IOException {
 
-        File logo = new File(ArchivoUtil.UBICACION,nombreLogo);
+        File logo = new File(ArchivoUtil.UBICACION, nombreLogo);
 
-        if(!logo.exists()){
+        if (!logo.exists()) {
             throw new FileNotFoundException("Archivo no encontrado");
         }
 
         logo.delete();
     }
 
-    public boolean esExtensionValida(MultipartFile archivo) {
-
-        String nombreArchivo = archivo.getOriginalFilename();
+    public boolean esExtensionValida(String nombreArchivo) {
         if (nombreArchivo != null && nombreArchivo.contains(".")) {
             String extension = nombreArchivo.substring(nombreArchivo.lastIndexOf(".") + 1).toLowerCase();
             return EXTENSIONES_VALIDAS.contains(extension);
@@ -73,12 +69,8 @@ public class ArchivoUtil {
         return false;
     }
 
-    public boolean esTamanioValido(MultipartFile archivo) {
-
-        if (archivo.getSize() > ArchivoUtil.TAMANIO_MAXIMO) {
-            return false;
-        }
-        return true;
+    public boolean esTamanioValido(byte[] contenido) {
+        return contenido.length <= TAMANIO_MAXIMO;
     }
 
 }

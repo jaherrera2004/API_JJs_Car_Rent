@@ -1,5 +1,6 @@
 package com.JJsCarRent.services.marcas;
 
+import com.JJsCarRent.utils.adapters.ImageAdapter;
 import com.JJsCarRent.utils.mappers.MarcaMapper;
 import com.JJsCarRent.models.dto.MarcaDto;
 import com.JJsCarRent.models.exceptions.HttpGenericException;
@@ -13,6 +14,7 @@ import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,16 +29,21 @@ public class MarcaServiceImpl implements MarcaIService {
     private final MarcaMapper marcaMapper;
     private final MarcaIRepository marcaIRepository;
     private final ArchivoUtil archivoUtil;
+    private final ImageAdapter imageAdapter;
 
     @Override
-    public void agregarMarca(MarcaRequest request) {
+    public void agregarMarca(MarcaRequest request, MultipartFile logo) throws IOException {
 
         if (marcaIRepository.existsByMarca(request.getMarca())) {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Esta marca ya existe");
         }
 
         MarcaDto marcaDto = construirMarca(request);
+
         marcaIRepository.save(marcaMapper.toEntity(marcaDto));
+
+        agregarLogo(new MarcaLogoRequest(request.getMarca(), logo));
+
     }
 
     @Override
@@ -75,24 +82,23 @@ public class MarcaServiceImpl implements MarcaIService {
     @Override
     public void agregarLogo(MarcaLogoRequest request) throws IOException {
 
-       if(marcaIRepository.tieneLogo(request.getMarca())){
-           throw new HttpGenericException(HttpStatus.BAD_REQUEST,"La marca ya tiene foto.");
-       }
-
-        if (!marcaIRepository.existsByMarca(request.getMarca())) {
-            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "La marca que has ingresado no existe");
-        }
-
-        if (!archivoUtil.esExtensionValida(request.getLogo())) {
+        if (!archivoUtil.esExtensionValida(request.getLogo().getOriginalFilename())) {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Debes enviar archivos en formato jpg, png o jepg");
         }
 
-
-        if (!archivoUtil.esTamanioValido(request.getLogo())) {
+        if (!archivoUtil.esTamanioValido(request.getLogo().getBytes())) {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "la foto de demasiado grande");
         }
 
-        String nombreFoto = archivoUtil.subirArchivo(request.getLogo());
+        if(marcaIRepository.tieneLogo(request.getMarca())){
+          archivoUtil.eliminarLogo(marcaIRepository.obtenerLogoPorMarca(request.getMarca()));
+        }
+
+//        byte[] logoWebp = imageAdapter.getWebpImage(request.getLogo().getBytes());
+//        String nombreOriginal = request.getLogo().getOriginalFilename();
+//        String nombreLogoWebp = nombreOriginal.substring(0, nombreOriginal.lastIndexOf(".")) + ".webp";
+
+        String nombreFoto = archivoUtil.subirArchivo(request.getLogo().getBytes(),request.getLogo().getOriginalFilename());
         marcaIRepository.actualizarFoto(nombreFoto, request.getMarca());
     }
 

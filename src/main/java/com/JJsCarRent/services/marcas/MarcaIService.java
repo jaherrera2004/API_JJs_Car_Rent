@@ -6,12 +6,13 @@ import com.JJsCarRent.models.request.marcas.MarcaRequest;
 import com.JJsCarRent.models.response.marcas.MarcaConLogoResponse;
 import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 
 public interface MarcaIService {
-    void agregarMarca(MarcaRequest request);
+    void agregarMarca(MarcaRequest request, MultipartFile logo) throws IOException;
 
     List<MarcaDto> obtenerListaMarcas();
 

@@ -130,5 +130,12 @@ public class MarcaRepositoryImpl implements MarcaIRepository {
         jdbcTemplate.update(sql, id);
     }
 
+    @Override
+    public String obtenerLogoPorMarca(String marca) {
+        String sql = "SELECT logo FROM tbl_marcas WHERE marca = ?";
+
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getString("logo"), marca);
+    }
+
 
 }

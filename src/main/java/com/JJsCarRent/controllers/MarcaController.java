@@ -15,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -29,7 +31,10 @@ public class MarcaController {
     @Operation(summary = "Agregar nueva marca")
     @PreAuthorize("hasAuthority('marca:agregar')")
     @PostMapping
-    public void agregarMarca(@RequestBody @Valid MarcaRequest request) { marcaIService.agregarMarca(request); }
+    public void agregarMarca(@RequestPart("data") @Valid MarcaRequest request,
+                             @RequestPart("logo") MultipartFile logo) throws IOException {
+        marcaIService.agregarMarca(request, logo);
+    }
 
     @Operation(summary = "Traer lista de marcas")
     @PreAuthorize("hasAuthority('marca:obtener-lista')")
@@ -41,36 +46,36 @@ public class MarcaController {
     @Operation(summary = "Desactivar marca")
     @PreAuthorize("hasAuthority('marca:desactivar')")
     @DeleteMapping("/{id}")
-    public void desactivarMarca(@PathVariable Integer id){
+    public void desactivarMarca(@PathVariable Integer id) {
         marcaIService.desactivarMarca(id);
     }
 
     @Operation(summary = "Activar marca")
     @PreAuthorize("hasAuthority('marca:activar')")
     @PutMapping("/{id}")
-    public void activarMarca(@PathVariable Integer id){
+    public void activarMarca(@PathVariable Integer id) {
         marcaIService.activarMarca(id);
     }
 
     @Operation(summary = "Desactivar marca")
     @PreAuthorize("hasAuthority('marca:obtener')")
     @GetMapping("/{id}")
-    public MarcaDto obtenerMarcaPorId(@PathVariable Integer id){
+    public MarcaDto obtenerMarcaPorId(@PathVariable Integer id) {
         return marcaIService.obtenerPorId(id);
     }
 
-    @Operation(summary = "Agregar logo a una marca")
-    @PreAuthorize("hasAuthority('marca:agregar-logo')")
-    @PostMapping("/logo")
-    public void agregarLogo(@ModelAttribute MarcaLogoRequest request) throws IOException {
-        marcaIService.agregarLogo(request);
-    }
+//    @Operation(summary = "Agregar logo a una marca")
+//    @PreAuthorize("hasAuthority('marca:agregar-logo')")
+//    @PostMapping("/logo")
+//    public void agregarLogo(@ModelAttribute MarcaLogoRequest request) throws IOException {
+//        marcaIService.agregarLogo(request);
+//    }
 
     @Operation(summary = "Obtener el logo de una marca")
     @PreAuthorize("hasAuthority('marca:obtener-logo')")
     @GetMapping("/logo/{id}")
     public ResponseEntity<ByteArrayResource> obtenerLogo(@PathVariable Integer id) throws IOException {
-        Pair<ByteArrayResource,String> data = marcaIService.obtenerLogo(id);
+        Pair<ByteArrayResource, String> data = marcaIService.obtenerLogo(id);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(data.b))
@@ -87,7 +92,7 @@ public class MarcaController {
     @Operation(summary = "Obtener datos de una marca con su logo")
     @PreAuthorize("hasAuthority('marca:obtener-marca-logo')")
     @GetMapping("/logos")
-    public List<MarcaConLogoResponse> obtenerMarcasConLogo(){
+    public List<MarcaConLogoResponse> obtenerMarcasConLogo() {
         return marcaIService.obtenerMarcasConLogo();
     }
 }

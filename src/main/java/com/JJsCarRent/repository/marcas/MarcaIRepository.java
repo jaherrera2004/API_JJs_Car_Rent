@@ -32,4 +32,7 @@ public interface MarcaIRepository {
     boolean tieneLogo(String logo);
 
     void eliminarLogo(Integer id);
+
+    String obtenerLogoPorMarca(String marca);
+
 }
