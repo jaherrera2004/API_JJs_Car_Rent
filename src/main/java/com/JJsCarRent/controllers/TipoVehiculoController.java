@@ -22,10 +22,8 @@ public class TipoVehiculoController {
     @Operation(summary = "Agregar tipo de vehiculo")
     @PreAuthorize("hasAuthority('tipo-vehiculo:agregar')")
     @PostMapping
-    public ResponseEntity<String> agregarTipoVehiculo(@RequestBody @Valid TipoVehiculoRequest request){
+    public void agregarTipoVehiculo(@RequestBody @Valid TipoVehiculoRequest request){
         tipoVehiculoIService.agregarTipoVehiculo(request);
-        return ResponseEntity.ok()
-                .body("Tipo de vehiculo agregado correctamente");
     }
 
     @Operation(summary = "Obtener lista de tipos de vehiculo")
@@ -33,5 +31,12 @@ public class TipoVehiculoController {
     @GetMapping
     public List<TipoVehiculoDto> obtenerListaTipoVehiculos(){
         return tipoVehiculoIService.obtenerListaTipoVehiculos();
+    }
+
+    @Operation(summary = "Desactivar tipo de vehiculo")
+    @PreAuthorize("hasAuthority('tipo-vehiculo:desactivar')")
+    @DeleteMapping("/{id}")
+    public void desactivarTipoVehiculo(@PathVariable Integer id){
+        tipoVehiculoIService.desactivarTipoVehiculo(id);
     }
 }

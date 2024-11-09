@@ -118,3 +118,119 @@ BEGIN
 END //
 
 DELIMITER ;
+----------------------------------------------------------------------------------------
+DELIMITER //
+
+	CREATE PROCEDURE desactivar_vehiculo( IN p_id INTEGER)
+	BEGIN
+
+		UPDATE tbl_vehiculos
+		SET activo = false
+		WHERE id=p_id;
+
+	END//
+
+DELIMITER ;
+--------------------
+
+CREATE PROCEDURE desactivar_modelo(IN p_id INTEGER)
+BEGIN
+    DECLARE v_id_vehiculo INTEGER;
+    DECLARE done BOOLEAN DEFAULT FALSE;
+
+    -- Declaración de cursor y manejador de errores antes de la transacción
+    DECLARE vehiculos_cursor CURSOR FOR
+    SELECT id FROM tbl_modelos WHERE id_modelo = p_id;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    -- Manejador de errores para hacer ROLLBACK si ocurre un error
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    -- Iniciar la transacción
+    START TRANSACTION;
+
+    -- Actualizar el modelo para desactivarlo
+    UPDATE tbl_modelos
+    SET activo = FALSE
+    WHERE id = p_id;
+
+    -- Abrir el cursor
+    OPEN vehiculos_cursor;
+
+    -- Bucle para desactivar cada vehículo asociado al modelo
+    vehiculo_loop: LOOP
+        FETCH vehiculos_cursor INTO v_id_vehiculo;
+
+        IF done THEN
+            LEAVE vehiculo_loop;
+        END IF;
+
+        -- Llamar al procedimiento para desactivar el vehículo
+        CALL desactivar_vehiculo(v_id_vehiculo);
+    END LOOP;
+
+    -- Cerrar el cursor
+    CLOSE vehiculos_cursor;
+
+    -- Confirmar la transacción
+    COMMIT;
+END //
+
+DELIMITER ;
+------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS desactivar_modelo;
+
+DELIMITER //
+
+CREATE PROCEDURE desactivar_tipo_vehiculo(IN p_id INTEGER)
+BEGIN
+    DECLARE v_id_modelo INTEGER;
+    DECLARE done BOOLEAN DEFAULT FALSE;
+
+    -- Declaración de cursor y manejador de errores antes de la transacción
+    DECLARE tipo_vehiculos_cursor CURSOR FOR
+    SELECT id FROM tbl_tipo_vehiculos WHERE id_modelo = p_id;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    -- Manejador de errores para hacer ROLLBACK si ocurre un error
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    -- Iniciar la transacción
+    START TRANSACTION;
+
+    -- Actualizar el modelo para desactivarlo
+    UPDATE tbl_tipo_vehiculo
+    SET activo = FALSE
+    WHERE id = p_id;
+
+    -- Abrir el cursor
+    OPEN tipo_vehiculos_cursor;
+
+    -- Bucle para desactivar cada vehículo asociado al modelo
+    modelo_loop: LOOP
+        FETCH tipo_vehiculos_cursor INTO v_id_modelo;
+
+        IF done THEN
+            LEAVE modelo_loop;
+        END IF;
+
+        -- Llamar al procedimiento para desactivar el vehículo
+        CALL desactivar_modelo(v_id_modelo);
+    END LOOP;
+
+    -- Cerrar el cursor
+    CLOSE tipo_vehiculos_cursor;
+
+    -- Confirmar la transacción
+    COMMIT;
+END //
+
+DELIMITER ;

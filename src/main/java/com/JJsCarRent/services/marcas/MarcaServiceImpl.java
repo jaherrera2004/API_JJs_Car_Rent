@@ -94,11 +94,11 @@ public class MarcaServiceImpl implements MarcaIService {
           archivoUtil.eliminarLogo(marcaIRepository.obtenerLogoPorMarca(request.getMarca()));
         }
 
-//        byte[] logoWebp = imageAdapter.getWebpImage(request.getLogo().getBytes());
-//        String nombreOriginal = request.getLogo().getOriginalFilename();
-//        String nombreLogoWebp = nombreOriginal.substring(0, nombreOriginal.lastIndexOf(".")) + ".webp";
+        byte[] logoWebp = imageAdapter.getWebpImage(request.getLogo().getBytes());
+        String nombreOriginal = request.getLogo().getOriginalFilename();
+        String nombreLogoWebp = nombreOriginal.substring(0, nombreOriginal.lastIndexOf(".")) + ".webp";
 
-        String nombreFoto = archivoUtil.subirArchivo(request.getLogo().getBytes(),request.getLogo().getOriginalFilename());
+        String nombreFoto = archivoUtil.subirArchivo(logoWebp,nombreLogoWebp);
         marcaIRepository.actualizarFoto(nombreFoto, request.getMarca());
     }
 

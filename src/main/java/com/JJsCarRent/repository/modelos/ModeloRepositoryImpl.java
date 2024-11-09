@@ -78,4 +78,11 @@ public class ModeloRepositoryImpl implements ModeloIRepository {
         String sql = "SELECT modelo FROM ver_lista_modelos WHERE id=?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, String.class);
     }
+
+    @Override
+    public void desactivar(Integer id) {
+        String sql="CALL desactivar_modelo(?);";
+
+        jdbcTemplate.update(sql,id);
+    }
 }

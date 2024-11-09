@@ -32,5 +32,11 @@ public class VehiculoController {
         return vehiculoIService.obtenerListaVehiculos();
     }
 
+    @Operation(summary = "Desactivar vehiculo")
+    @PreAuthorize("hasAuthority('vehiculo:desactivar')")
+    @DeleteMapping("/{id}")
+    public void desactivarVehiculo(@PathVariable Integer id){
+        vehiculoIService.desactivarVehiculo(id);
+    }
 
 }

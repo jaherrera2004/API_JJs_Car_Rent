@@ -14,4 +14,6 @@ public interface TipoVehiculoIRepository {
     List<TipoVehiculoEntity> findAll();
 
     String findTipoById(Integer id);
+
+    void desactivar(Integer id);
 }

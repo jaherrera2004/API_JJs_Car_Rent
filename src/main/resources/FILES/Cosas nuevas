@@ -1,48 +1,190 @@
+ALTER TABLE tbl_tipo_vehiculo ADD COLUMN activo BOOLEAN;
+UPDATE tbl_tipo_vehiculo SET activo=TRUE;
+
+ALTER TABLE tbl_modelos
+ADD CONSTRAINT `fk-veh-mar`
+FOREIGN KEY (`id_marca`) REFERENCES tbl_marcas(`id`);
+
 DELIMITER //
 
-CREATE PROCEDURE agregar_tipo_vehiculo(
-    IN p_tipo VARCHAR(255),
-    IN p_descripcion VARCHAR(255)
-)
+	CREATE PROCEDURE desactivar_vehiculo( IN p_id INTEGER)
+	BEGIN
+
+		UPDATE tbl_vehiculos
+		SET activo = false
+		WHERE id=p_id;
+
+	END//
+
+DELIMITER ;
+
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS desactivar_modelo;
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS desactivar_modelo$$
+
+CREATE PROCEDURE desactivar_modelo(IN p_id INTEGER)
 BEGIN
-    INSERT INTO tbl_tipo_vehiculo (tipo, descripcion)
-    VALUES (p_tipo, p_descripcion);
+    DECLARE v_id_vehiculo INTEGER;
+    DECLARE done BOOLEAN DEFAULT FALSE;
+
+    -- Declarar el cursor para seleccionar los vehículos asociados al modelo
+    DECLARE vehiculos_cursor CURSOR FOR
+    SELECT id FROM tbl_vehiculos WHERE id_modelo = p_id;
+
+    -- Handler para cuando no haya más filas en el cursor
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    -- Handler para errores
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        -- Si ocurre un error, deshacemos todos los cambios
+        ROLLBACK;
+    END;
+
+    -- Iniciar la transacción
+    START TRANSACTION;
+
+    -- Actualizar el modelo para desactivarlo
+    UPDATE tbl_modelos
+    SET activo = FALSE
+    WHERE id = p_id;
+
+    -- Abrir el cursor
+    OPEN vehiculos_cursor;
+
+    -- Bucle para desactivar cada vehículo asociado al modelo
+    vehiculo_loop: LOOP
+        FETCH vehiculos_cursor INTO v_id_vehiculo;
+
+        IF done THEN
+            LEAVE vehiculo_loop;
+        END IF;
+
+        -- Llamar al procedimiento para desactivar el vehículo
+        CALL desactivar_vehiculo(v_id_vehiculo);
+    END LOOP;
+
+    -- Cerrar el cursor
+    CLOSE vehiculos_cursor;
+
+    -- Confirmar la transacción si todo fue exitoso
+    COMMIT;
+END$$
+
+DELIMITER ;
+
+
+
+
+DELIMITER //
+
+CREATE PROCEDURE desactivar_tipo_vehiculo(IN p_id INTEGER)
+BEGIN
+    DECLARE v_id_modelo INTEGER;
+    DECLARE done BOOLEAN DEFAULT FALSE;
+
+    -- Declaración de cursor y manejador de errores antes de la transacción
+    DECLARE tipo_vehiculos_cursor CURSOR FOR
+    SELECT id FROM tbl_tipo_vehiculos WHERE id_modelo = p_id;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    -- Manejador de errores para hacer ROLLBACK si ocurre un error
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    -- Iniciar la transacción
+    START TRANSACTION;
+
+    -- Actualizar el modelo para desactivarlo
+    UPDATE tbl_tipo_vehiculo
+    SET activo = FALSE
+    WHERE id = p_id;
+
+    -- Abrir el cursor
+    OPEN tipo_vehiculos_cursor;
+
+    -- Bucle para desactivar cada vehículo asociado al modelo
+    modelo_loop: LOOP
+        FETCH tipo_vehiculos_cursor INTO v_id_modelo;
+
+        IF done THEN
+            LEAVE modelo_loop;
+        END IF;
+
+        -- Llamar al procedimiento para desactivar el vehículo
+        CALL desactivar_modelo(v_id_modelo);
+    END LOOP;
+
+    -- Cerrar el cursor
+    CLOSE tipo_vehiculos_cursor;
+
+    -- Confirmar la transacción
+    COMMIT;
+END //
+
+DELIMITER ;
+------------------------------
+DROP PROCEDURE IF EXISTS desactivar_marca;
+
+DELIMITER //
+
+CREATE PROCEDURE desactivar_marca(IN p_id INTEGER)
+BEGIN
+    DECLARE v_id_vehiculo INTEGER;
+    DECLARE done BOOLEAN DEFAULT FALSE;
+
+    -- Declarar el cursor para seleccionar los vehículos asociados al modelo
+    DECLARE vehiculos_cursor CURSOR FOR
+    SELECT id FROM tbl_modelos WHERE id_marca = p_id;
+
+    -- Handler para cuando no haya más filas en el cursor
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    -- Actualizar el modelo para desactivarlo
+    UPDATE tbl_marcas
+    SET activo = FALSE
+    WHERE id = p_id;
+
+    -- Abrir el cursor
+    OPEN vehiculos_cursor;
+
+    -- Bucle para desactivar cada vehículo asociado al modelo
+    vehiculo_loop: LOOP
+        FETCH vehiculos_cursor INTO v_id_vehiculo;
+
+        IF done THEN
+            LEAVE vehiculo_loop;
+        END IF;
+
+        -- Llamar al procedimiento para desactivar el vehículo
+        CALL desactivar_vehiculo(v_id_vehiculo);
+    END LOOP;
+
+    -- Cerrar el cursor
+    CLOSE vehiculos_cursor;
 END //
 
 DELIMITER ;
 
-CREATE VIEW ver_tipos_vehiculos AS
-SELECT id, tipo, descripcion
-FROM tbl_tipo_vehiculo;
-
-CREATE VIEW ver_lista_vehiculos AS
-SELECT id, id_modelo, placa, anio, kilometraje, valor_dia, activo, color
-FROM tbl_vehiculos;
-
-DROP VIEW IF EXISTS ver_lista_modelos;
-
-CREATE VIEW ver_lista_modelos AS
-SELECT id,id_marca,modelo,id_tipo_vehiculo,activo FROM tbl_modelos;
-
-
-INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('tipo-vehiculo:agregar','Permiso para agregar un nuevo tipo de vehiculo');
+INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('vehiculo:desactivar','Permiso para desactivar un vehiculo');
 
 INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
-((SELECT id FROM tbl_permisos WHERE permiso='tipo-vehiculo:agregar'),1);
+((SELECT id FROM tbl_permisos WHERE permiso='vehiculo:desactivar'),1);
 
-INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('tipo-vehiculo:obtener-lista','Permiso para obtener lista de tipos de vehiculo');
-
-INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
-((SELECT id FROM tbl_permisos WHERE permiso='tipo-vehiculo:obtener-lista'),1);
-
-INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('modelo:obtener-lista','Permiso para obtener lista de modelos');
+INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('tipo-vehiculo:desactivar','Permiso para desactivar un tipo de vehiculo');
 
 INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
-((SELECT id FROM tbl_permisos WHERE permiso='modelo:obtener-lista'),1);
+((SELECT id FROM tbl_permisos WHERE permiso='tipo-vehiculo:desactivar'),1);
 
-INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('vehiculo:obtener-lista','Permiso para obtener la lista de vehiculos');
+INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('modelo:desactivar','Permiso para desactivar un modelo');
 
 INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
-((SELECT id FROM tbl_permisos WHERE permiso='vehiculo:obtener-lista'),1);
+((SELECT id FROM tbl_permisos WHERE permiso='modelo:desactivar'),1);
 
 

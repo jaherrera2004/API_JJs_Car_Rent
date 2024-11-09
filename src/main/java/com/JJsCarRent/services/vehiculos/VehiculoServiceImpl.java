@@ -44,11 +44,20 @@ public class VehiculoServiceImpl implements VehiculoIService {
                 .map(vehiculoMapper::toDto)
                 .toList();
 
-        List<VehiculosDatosResponse> listaVehiculosResponse=new ArrayList<>();
+        List<VehiculosDatosResponse> listaVehiculosResponse = new ArrayList<>();
 
         listaVehiculosDto.forEach(vehiculoDto -> listaVehiculosResponse.add(construirVehiculoResponse(vehiculoDto)));
 
         return listaVehiculosResponse;
+    }
+
+    @Override
+    public void desactivarVehiculo(Integer id) {
+        if (!vehiculoIRepository.existsById(id)) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "El vehiculo que has ingresado no existe");
+        }
+
+        vehiculoIRepository.desactivar(id);
     }
 
     private VehiculoDto construirVehiculo(VehiculoRequest request) {
@@ -63,7 +72,7 @@ public class VehiculoServiceImpl implements VehiculoIService {
                 .build();
     }
 
-    private VehiculosDatosResponse construirVehiculoResponse(VehiculoDto vehiculoDto){
+    private VehiculosDatosResponse construirVehiculoResponse(VehiculoDto vehiculoDto) {
         return VehiculosDatosResponse.builder()
                 .id(vehiculoDto.getId())
                 .placa(vehiculoDto.getPlaca())

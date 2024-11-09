@@ -35,6 +35,14 @@ public class VehiculoRepositoryImpl implements VehiculoIRepository{
     }
 
     @Override
+    public boolean existsById(Integer id) {
+        String sql = "SELECT COUNT(*) FROM tbl_vehiculos WHERE id=?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
+
+        return count != null && count > 0;
+    }
+
+    @Override
     public List<VehiculoEntity> findAll() {
         String sql = "SELECT * FROM ver_lista_vehiculos";
 
@@ -50,5 +58,11 @@ public class VehiculoRepositoryImpl implements VehiculoIRepository{
             vehiculo.setIdModelo(rs.getInt("id_modelo"));
             return vehiculo;
         });
+    }
+
+    @Override
+    public void desactivar(Integer id) {
+        String sql="CALL desactivar_vehiculo(?)";
+        jdbcTemplate.update(sql,id);
     }
 }

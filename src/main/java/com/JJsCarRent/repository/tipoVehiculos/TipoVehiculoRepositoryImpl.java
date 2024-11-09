@@ -58,4 +58,11 @@ public class TipoVehiculoRepositoryImpl implements TipoVehiculoIRepository {
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, String.class);
 
     }
+
+    @Override
+    public void desactivar(Integer id) {
+        String sql="CALL desactivar_tipo_vehiculo(?)";
+
+        jdbcTemplate.update(sql,id);
+    }
 }

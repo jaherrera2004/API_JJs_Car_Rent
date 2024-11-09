@@ -17,4 +17,6 @@ public interface ModeloIRepository {
     List<ModeloEntity> findAll();
 
     String findModeloById(Integer id);
+
+    void desactivar(Integer id);
 }

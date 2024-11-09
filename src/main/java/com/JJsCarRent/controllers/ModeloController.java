@@ -40,4 +40,11 @@ public class ModeloController {
         return modeloIService.obtenerListaModelos();
     }
 
+    @Operation(summary = "Desactivar modelo")
+    @PreAuthorize("hasAuthority('modelo:desactivar')")
+    @DeleteMapping("/{id}")
+    public void desactivarModelo(@PathVariable Integer id){
+        modeloIService.desactivarModelo(id);
+    }
+
 }

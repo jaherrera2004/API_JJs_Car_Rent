@@ -7,5 +7,8 @@ import java.util.List;
 
 public interface TipoVehiculoIService {
     void agregarTipoVehiculo(TipoVehiculoRequest request);
+
     List<TipoVehiculoDto> obtenerListaTipoVehiculos();
+
+    void desactivarTipoVehiculo(Integer id);
 }

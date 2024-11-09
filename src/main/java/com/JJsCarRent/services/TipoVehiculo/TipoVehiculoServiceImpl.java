@@ -37,6 +37,16 @@ public class TipoVehiculoServiceImpl implements TipoVehiculoIService {
                 .toList();
     }
 
+    @Override
+    public void desactivarTipoVehiculo(Integer id) {
+
+        if(!tipoVehiculoIRepository.existsById(id)){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"El tipo de vehiculo que has ingresado no existe");
+        }
+
+        tipoVehiculoIRepository.desactivar(id);
+    }
+
     private TipoVehiculoDto construirTipoVehiculoDto(TipoVehiculoRequest request){
         return TipoVehiculoDto.builder()
                 .tipo(request.getTipo())

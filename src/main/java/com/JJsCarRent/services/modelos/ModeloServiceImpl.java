@@ -63,10 +63,20 @@ public class ModeloServiceImpl implements ModeloIService {
                 .map(modeloMapper::toDto)
                 .toList();
 
-        List<ModeloDatosResponse> listaModeloDatosResponses= new ArrayList<>();
+        List<ModeloDatosResponse> listaModeloDatosResponses = new ArrayList<>();
         listaModeloDto.forEach(modeloDto -> listaModeloDatosResponses.add(construirModeloResponse(modeloDto)));
 
         return listaModeloDatosResponses;
+    }
+
+    @Override
+    public void desactivarModelo(Integer id) {
+        if (!modeloIRepository.existsById(id)) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "El modelo ingresado no existe");
+        }
+
+        modeloIRepository.desactivar(id);
+
     }
 
     private ModeloDto construirModelo(ModeloRequest request) {
@@ -78,7 +88,7 @@ public class ModeloServiceImpl implements ModeloIService {
                 .build();
     }
 
-    private ModeloDatosResponse construirModeloResponse (ModeloDto modeloDto){
+    private ModeloDatosResponse construirModeloResponse(ModeloDto modeloDto) {
         return ModeloDatosResponse.builder()
                 .id(modeloDto.getId())
                 .modelo(modeloDto.getModelo())

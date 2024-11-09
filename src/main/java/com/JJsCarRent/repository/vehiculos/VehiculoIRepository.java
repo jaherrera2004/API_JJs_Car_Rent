@@ -9,5 +9,9 @@ public interface VehiculoIRepository {
 
     boolean existsByPlaca(String placa);
 
+    boolean existsById(Integer id);
+
     List<VehiculoEntity> findAll();
+
+    void desactivar(Integer id);
 }
