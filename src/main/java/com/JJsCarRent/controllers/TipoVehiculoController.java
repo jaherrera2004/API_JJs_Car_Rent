@@ -2,6 +2,7 @@ package com.JJsCarRent.controllers;
 
 import com.JJsCarRent.models.dto.TipoVehiculoDto;
 import com.JJsCarRent.models.request.tipoVehiculo.TipoVehiculoRequest;
+import com.JJsCarRent.models.response.GenericResponse;
 import com.JJsCarRent.services.TipoVehiculo.TipoVehiculoIService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -22,8 +23,9 @@ public class TipoVehiculoController {
     @Operation(summary = "Agregar tipo de vehiculo")
     @PreAuthorize("hasAuthority('tipo-vehiculo:agregar')")
     @PostMapping
-    public void agregarTipoVehiculo(@RequestBody @Valid TipoVehiculoRequest request){
+    public ResponseEntity<GenericResponse> agregarTipoVehiculo(@RequestBody @Valid TipoVehiculoRequest request){
         tipoVehiculoIService.agregarTipoVehiculo(request);
+        return ResponseEntity.ok(GenericResponse.ok(true,"Tipo de vehiculo agregado exitosamente"));
     }
 
     @Operation(summary = "Obtener lista de tipos de vehiculo")
