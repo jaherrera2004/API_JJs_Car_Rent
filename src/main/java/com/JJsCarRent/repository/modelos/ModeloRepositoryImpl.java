@@ -60,7 +60,7 @@ public class ModeloRepositoryImpl implements ModeloIRepository {
 
     @Override
     public List<ModeloEntity> findAll() {
-        String sql = "SELECT * FROM ver_lista_modelos;";
+        String sql = "SELECT * FROM ver_lista_modelos WHERE activo=1;";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             ModeloEntity modelo = new ModeloEntity();

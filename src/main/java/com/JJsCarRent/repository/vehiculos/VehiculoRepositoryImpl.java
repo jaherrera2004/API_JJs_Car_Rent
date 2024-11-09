@@ -44,7 +44,7 @@ public class VehiculoRepositoryImpl implements VehiculoIRepository{
 
     @Override
     public List<VehiculoEntity> findAll() {
-        String sql = "SELECT * FROM ver_lista_vehiculos";
+        String sql = "SELECT * FROM ver_lista_vehiculos WHERE activo=1";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             VehiculoEntity vehiculo = new VehiculoEntity();

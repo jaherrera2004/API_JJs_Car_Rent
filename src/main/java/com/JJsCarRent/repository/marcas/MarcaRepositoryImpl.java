@@ -33,7 +33,7 @@ public class MarcaRepositoryImpl implements MarcaIRepository {
 
     @Override
     public List<MarcaEntity> findAll() {
-        String sql = "SELECT * FROM ver_lista_marcas";
+        String sql = "SELECT * FROM ver_lista_marcas WHERE activo=1";
 
         List<MarcaEntity> listaMarcasEntity = jdbcTemplate.query(sql, (rs, rowNum) -> {
             MarcaEntity marcaEntity = new MarcaEntity();
