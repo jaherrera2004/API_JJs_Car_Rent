@@ -49,6 +49,7 @@ public class TipoVehiculoServiceImpl implements TipoVehiculoIService {
 
     private TipoVehiculoDto construirTipoVehiculoDto(TipoVehiculoRequest request){
         return TipoVehiculoDto.builder()
+                .activo(true)
                 .tipo(request.getTipo())
                 .descripcion(request.getDescripcion())
                 .build();

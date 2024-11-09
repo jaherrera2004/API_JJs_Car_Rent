@@ -23,6 +23,8 @@ public interface MarcaIRepository {
 
     String findMarcaById(Integer id);
 
+    String findMarcaByModeloId(Integer id);
+
     void actualizarFoto(String foto, String marca);
 
     String obtenerLogoPorId(Integer id);

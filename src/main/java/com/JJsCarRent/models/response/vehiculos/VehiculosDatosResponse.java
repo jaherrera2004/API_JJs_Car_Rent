@@ -15,5 +15,6 @@ public class VehiculosDatosResponse {
     private float valorDia;
     private String color;
     private boolean activo;
+    private String marca;
     private String modelo;
 }

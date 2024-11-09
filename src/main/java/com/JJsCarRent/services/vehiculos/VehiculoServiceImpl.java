@@ -4,6 +4,7 @@ import com.JJsCarRent.models.dto.VehiculoDto;
 import com.JJsCarRent.models.exceptions.HttpGenericException;
 import com.JJsCarRent.models.request.vehiculo.VehiculoRequest;
 import com.JJsCarRent.models.response.vehiculos.VehiculosDatosResponse;
+import com.JJsCarRent.repository.marcas.MarcaIRepository;
 import com.JJsCarRent.repository.modelos.ModeloIRepository;
 import com.JJsCarRent.repository.vehiculos.VehiculoIRepository;
 import com.JJsCarRent.utils.mappers.VehiculoMapper;
@@ -19,6 +20,7 @@ import java.util.List;
 public class VehiculoServiceImpl implements VehiculoIService {
 
     private final VehiculoIRepository vehiculoIRepository;
+    private final MarcaIRepository marcaIRepository;
     private final ModeloIRepository modeloIRepository;
     private final VehiculoMapper vehiculoMapper;
 
@@ -77,6 +79,7 @@ public class VehiculoServiceImpl implements VehiculoIService {
                 .id(vehiculoDto.getId())
                 .placa(vehiculoDto.getPlaca())
                 .modelo(modeloIRepository.findModeloById(vehiculoDto.getIdModelo()))
+                .marca(marcaIRepository.findMarcaByModeloId(vehiculoDto.getIdModelo()))
                 .anio(vehiculoDto.getAnio())
                 .kilometraje(vehiculoDto.getKilometraje())
                 .color(vehiculoDto.getColor())

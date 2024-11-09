@@ -24,9 +24,11 @@ public class TipoVehiculoRepositoryImpl implements TipoVehiculoIRepository {
 
     @Override
     public void save(TipoVehiculoEntity tipoVehiculoEntity) {
-        String sql = "CALL agregar_tipo_vehiculo(?,?);";
+        String sql = "CALL agregar_tipo_vehiculo(?,?,?);";
 
-        jdbcTemplate.update(sql, tipoVehiculoEntity.getTipo(), tipoVehiculoEntity.getDescripcion());
+        jdbcTemplate.update(sql, tipoVehiculoEntity.getTipo(),
+                tipoVehiculoEntity.getDescripcion(),
+                tipoVehiculoEntity.isActivo());
     }
 
     @Override
@@ -40,13 +42,14 @@ public class TipoVehiculoRepositoryImpl implements TipoVehiculoIRepository {
 
     @Override
     public List<TipoVehiculoEntity> findAll() {
-        String sql = "SELECT * FROM ver_tipos_vehiculos;";
+        String sql = "SELECT * FROM ver_tipos_vehiculos WHERE activo=1;";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             TipoVehiculoEntity tipoVehiculo = new TipoVehiculoEntity();
             tipoVehiculo.setId(rs.getInt("id"));
             tipoVehiculo.setTipo(rs.getString("tipo"));
             tipoVehiculo.setDescripcion(rs.getString("descripcion"));
+            tipoVehiculo.setActivo(rs.getBoolean("activo"));
             return tipoVehiculo;
         });
     }
@@ -61,8 +64,8 @@ public class TipoVehiculoRepositoryImpl implements TipoVehiculoIRepository {
 
     @Override
     public void desactivar(Integer id) {
-        String sql="CALL desactivar_tipo_vehiculo(?)";
+        String sql = "CALL desactivar_tipo_vehiculo(?)";
 
-        jdbcTemplate.update(sql,id);
+        jdbcTemplate.update(sql, id);
     }
 }

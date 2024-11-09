@@ -10,5 +10,6 @@ public class TipoVehiculoDto {
     private Integer id;
     private String tipo;
     private String descripcion;
+    private boolean activo;
 
 }
