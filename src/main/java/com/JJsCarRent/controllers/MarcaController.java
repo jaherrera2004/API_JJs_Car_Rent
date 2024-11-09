@@ -3,6 +3,7 @@ package com.JJsCarRent.controllers;
 import com.JJsCarRent.models.dto.MarcaDto;
 import com.JJsCarRent.models.request.marcas.MarcaLogoRequest;
 import com.JJsCarRent.models.request.marcas.MarcaRequest;
+import com.JJsCarRent.models.response.GenericResponse;
 import com.JJsCarRent.models.response.marcas.MarcaConLogoResponse;
 import com.JJsCarRent.services.marcas.MarcaIService;
 import com.JJsCarRent.utils.ArchivoUtil;
@@ -31,9 +32,10 @@ public class MarcaController {
     @Operation(summary = "Agregar nueva marca")
     @PreAuthorize("hasAuthority('marca:agregar')")
     @PostMapping
-    public void agregarMarca(@RequestPart("data") @Valid MarcaRequest request,
-                             @RequestPart("logo") MultipartFile logo) throws IOException {
+    public ResponseEntity<GenericResponse> agregarMarca(@RequestPart("data") @Valid MarcaRequest request,
+                                                        @RequestPart("logo") MultipartFile logo) throws IOException {
         marcaIService.agregarMarca(request, logo);
+        return ResponseEntity.ok(GenericResponse.ok(true,"Marca agregada exitosamente"));
     }
 
     @Operation(summary = "Traer lista de marcas")
