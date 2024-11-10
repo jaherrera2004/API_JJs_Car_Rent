@@ -55,8 +55,9 @@ public class MarcaController {
     @Operation(summary = "Activar marca")
     @PreAuthorize("hasAuthority('marca:activar')")
     @PutMapping("/{id}")
-    public void activarMarca(@PathVariable Integer id) {
+    public ResponseEntity<GenericResponse> activarMarca(@PathVariable Integer id) {
         marcaIService.activarMarca(id);
+        return ResponseEntity.ok(GenericResponse.ok(true,"Marca activada exitosamente"));
     }
 
     @Operation(summary = "Desactivar marca")

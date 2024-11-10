@@ -19,4 +19,6 @@ public interface ModeloIRepository {
     String findModeloById(Integer id);
 
     void desactivar(Integer id);
+
+    void activar(Integer id);
 }

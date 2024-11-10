@@ -14,4 +14,6 @@ public interface VehiculoIRepository {
     List<VehiculoEntity> findAll();
 
     void desactivar(Integer id);
+
+    void activar(Integer id);
 }

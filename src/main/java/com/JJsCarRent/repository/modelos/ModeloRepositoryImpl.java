@@ -85,4 +85,10 @@ public class ModeloRepositoryImpl implements ModeloIRepository {
 
         jdbcTemplate.update(sql,id);
     }
+
+    @Override
+    public void activar(Integer id) {
+        String sql = "CALL activar_modelo(?)";
+        jdbcTemplate.update(sql,id);
+    }
 }

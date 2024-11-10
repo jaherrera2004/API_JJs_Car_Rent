@@ -16,7 +16,7 @@ import java.util.List;
 public class TipoVehiculoServiceImpl implements TipoVehiculoIService {
 
     private final TipoVehiculoIRepository tipoVehiculoIRepository;
-    private  final TipoVehiculoMapper tipoVehiculoMapper;
+    private final TipoVehiculoMapper tipoVehiculoMapper;
 
     @Override
     public void agregarTipoVehiculo(TipoVehiculoRequest request) {
@@ -40,14 +40,23 @@ public class TipoVehiculoServiceImpl implements TipoVehiculoIService {
     @Override
     public void desactivarTipoVehiculo(Integer id) {
 
-        if(!tipoVehiculoIRepository.existsById(id)){
-            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"El tipo de vehiculo que has ingresado no existe");
+        if (!tipoVehiculoIRepository.existsById(id)) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "El tipo de vehiculo que has ingresado no existe");
         }
 
         tipoVehiculoIRepository.desactivar(id);
     }
 
-    private TipoVehiculoDto construirTipoVehiculoDto(TipoVehiculoRequest request){
+    @Override
+    public void activarTipoVehiculo(Integer id) {
+        if (!tipoVehiculoIRepository.existsById(id)) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "El tipo de vehiculo que has ingresado no existe");
+        }
+
+        tipoVehiculoIRepository.activar(id);
+    }
+
+    private TipoVehiculoDto construirTipoVehiculoDto(TipoVehiculoRequest request) {
         return TipoVehiculoDto.builder()
                 .activo(true)
                 .tipo(request.getTipo())

@@ -11,4 +11,6 @@ public interface TipoVehiculoIService {
     List<TipoVehiculoDto> obtenerListaTipoVehiculos();
 
     void desactivarTipoVehiculo(Integer id);
+
+    void activarTipoVehiculo(Integer id);
 }

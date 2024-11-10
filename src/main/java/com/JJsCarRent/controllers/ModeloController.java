@@ -50,4 +50,11 @@ public class ModeloController {
         modeloIService.desactivarModelo(id);
     }
 
+    @Operation(summary = "Activar modelo")
+    @PreAuthorize("hasAuthority('modelo:activar')")
+    @PutMapping("/{id}")
+    public ResponseEntity<GenericResponse> activarModelo(@PathVariable Integer id){
+        return ResponseEntity.ok(GenericResponse.ok(true, "El modelo ha sido activado"));
+    }
+
 }

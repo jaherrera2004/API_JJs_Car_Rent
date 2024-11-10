@@ -79,6 +79,16 @@ public class ModeloServiceImpl implements ModeloIService {
 
     }
 
+    @Override
+    public void activarModelo(Integer id) {
+
+        if(!modeloIRepository.existsById(id)){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"El modelo has ingresado no existe");
+        }
+
+        modeloIRepository.activar(id);
+    }
+
     private ModeloDto construirModelo(ModeloRequest request) {
         return ModeloDto.builder()
                 .modelo(request.getModelo())

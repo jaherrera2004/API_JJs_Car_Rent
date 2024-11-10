@@ -16,4 +16,6 @@ public interface TipoVehiculoIRepository {
     String findTipoById(Integer id);
 
     void desactivar(Integer id);
+
+    void activar(Integer id);
 }

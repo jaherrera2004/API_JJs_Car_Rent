@@ -68,4 +68,11 @@ public class TipoVehiculoRepositoryImpl implements TipoVehiculoIRepository {
 
         jdbcTemplate.update(sql, id);
     }
+
+    @Override
+    public void activar(Integer id) {
+
+        String sql = "CALL activar_tipo_vehiculo(?)";
+        jdbcTemplate.update(sql, id);
+    }
 }

@@ -14,4 +14,6 @@ public interface ModeloIService {
     List<ModeloDatosResponse> obtenerListaModelos();
 
     void desactivarModelo(Integer id);
+
+    void activarModelo(Integer id);
 }

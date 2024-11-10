@@ -65,4 +65,10 @@ public class VehiculoRepositoryImpl implements VehiculoIRepository{
         String sql="CALL desactivar_vehiculo(?)";
         jdbcTemplate.update(sql,id);
     }
+
+    @Override
+    public void activar(Integer id) {
+        String sql = "CALL activar_vehiculo(?)";
+        jdbcTemplate.update(sql,id);
+    }
 }

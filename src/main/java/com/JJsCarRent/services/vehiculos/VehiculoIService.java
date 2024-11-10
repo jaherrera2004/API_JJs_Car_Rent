@@ -11,4 +11,6 @@ public interface VehiculoIService {
     List<VehiculosDatosResponse> obtenerListaVehiculos();
 
     void desactivarVehiculo(Integer id);
+
+    void activarVehiculo(Integer id);
 }

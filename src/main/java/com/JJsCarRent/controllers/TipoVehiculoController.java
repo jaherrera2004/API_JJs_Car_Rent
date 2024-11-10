@@ -41,4 +41,11 @@ public class TipoVehiculoController {
     public void desactivarTipoVehiculo(@PathVariable Integer id){
         tipoVehiculoIService.desactivarTipoVehiculo(id);
     }
+
+    @Operation(summary = "Activar tipo de vehiculo")
+    @PreAuthorize("hasAuthority('tipo-vehiculo:activar')")
+    @PutMapping("/{id}")
+    public ResponseEntity<GenericResponse> activarTipoVehiculo(@PathVariable Integer id){
+        return ResponseEntity.ok(GenericResponse.ok(true, "El tipo de vehiculo ha sido activado"));
+    }
 }

@@ -1,11 +1,13 @@
 package com.JJsCarRent.controllers;
 
 import com.JJsCarRent.models.request.vehiculo.VehiculoRequest;
+import com.JJsCarRent.models.response.GenericResponse;
 import com.JJsCarRent.models.response.vehiculos.VehiculosDatosResponse;
 import com.JJsCarRent.services.vehiculos.VehiculoIService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +39,13 @@ public class VehiculoController {
     @DeleteMapping("/{id}")
     public void desactivarVehiculo(@PathVariable Integer id){
         vehiculoIService.desactivarVehiculo(id);
+    }
+
+    @Operation(summary = "Activar vehiculo")
+    @PreAuthorize("hasAuthority('vehiculo:activar')")
+    @PutMapping("/{id}")
+    public ResponseEntity<GenericResponse> activarVehiculo(@PathVariable Integer id){
+        return ResponseEntity.ok(GenericResponse.ok(true,"Vehiculo activado exitosamente"));
     }
 
 }

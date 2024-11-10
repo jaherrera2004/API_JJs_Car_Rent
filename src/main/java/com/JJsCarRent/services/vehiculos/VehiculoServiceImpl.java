@@ -62,6 +62,15 @@ public class VehiculoServiceImpl implements VehiculoIService {
         vehiculoIRepository.desactivar(id);
     }
 
+    @Override
+    public void activarVehiculo(Integer id) {
+
+        if(!vehiculoIRepository.existsById(id)){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"El vehiculo que has ingresado no existe");
+        }
+        vehiculoIRepository.activar(id);
+    }
+
     private VehiculoDto construirVehiculo(VehiculoRequest request) {
         return VehiculoDto.builder()
                 .placa(request.getPlaca())
