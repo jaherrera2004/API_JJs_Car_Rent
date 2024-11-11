@@ -9,6 +9,7 @@ import com.JJsCarRent.models.request.marcas.MarcaRequest;
 import com.JJsCarRent.models.response.marcas.MarcaConLogoResponse;
 import com.JJsCarRent.repository.marcas.MarcaIRepository;
 import com.JJsCarRent.utils.ArchivoUtil;
+import com.JJsCarRent.utils.strategy.TipoArchivo;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.core.io.ByteArrayResource;
@@ -38,12 +39,21 @@ public class MarcaServiceImpl implements MarcaIService {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Esta marca ya existe");
         }
 
+        if(!archivoUtil.esExtensionValida(logo.getOriginalFilename(), TipoArchivo.IMAGEN)){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"Debes enviar una foto en un formato valido");
+        }
+
+        if (!archivoUtil.esTamanioValido(logo.getBytes())) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "la foto de demasiado grande");
+        }
+
+        Pair<byte[], String> logoWebp = archivoUtil.transformarAWebp(logo.getBytes(),logo.getOriginalFilename());
+
+        String nombreFoto = archivoUtil.subirArchivo(logoWebp.a, logoWebp.b);
+        marcaIRepository.actualizarFoto(nombreFoto, request.getMarca());
+
         MarcaDto marcaDto = construirMarca(request);
-
         marcaIRepository.save(marcaMapper.toEntity(marcaDto));
-
-        agregarLogo(new MarcaLogoRequest(request.getMarca(), logo));
-
     }
 
     @Override
@@ -82,35 +92,32 @@ public class MarcaServiceImpl implements MarcaIService {
     @Override
     public void agregarLogo(MarcaLogoRequest request) throws IOException {
 
-        if (!archivoUtil.esExtensionValida(request.getLogo().getOriginalFilename())) {
-            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Debes enviar archivos en formato jpg, png o jepg");
+        if(!archivoUtil.esExtensionValida(request.getLogo().getOriginalFilename(),TipoArchivo.IMAGEN)){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"Debes enviar una foto en un formato valido");
         }
 
         if (!archivoUtil.esTamanioValido(request.getLogo().getBytes())) {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "la foto de demasiado grande");
         }
 
-        if(marcaIRepository.tieneLogo(request.getMarca())){
-          archivoUtil.eliminarLogo(marcaIRepository.obtenerLogoPorMarca(request.getMarca()));
+        if (marcaIRepository.tieneLogo(request.getMarca())) {
+            archivoUtil.eliminarArchivo(marcaIRepository.obtenerLogoPorMarca(request.getMarca()));
         }
+        Pair<byte[], String> logoWebp = archivoUtil.transformarAWebp(request.getLogo().getBytes(),request.getLogo().getOriginalFilename());
 
-        byte[] logoWebp = imageAdapter.getWebpImage(request.getLogo().getBytes());
-        String nombreOriginal = request.getLogo().getOriginalFilename();
-        String nombreLogoWebp = nombreOriginal.substring(0, nombreOriginal.lastIndexOf(".")) + ".webp";
-
-        String nombreFoto = archivoUtil.subirArchivo(logoWebp,nombreLogoWebp);
+        String nombreFoto = archivoUtil.subirArchivo(logoWebp.a, logoWebp.b);
         marcaIRepository.actualizarFoto(nombreFoto, request.getMarca());
     }
 
     @Override
     public Pair<ByteArrayResource, String> obtenerLogo(Integer id) throws IOException {
 
-        if(!marcaIRepository.existsById(id)){
-            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"la marca que ingresaste no existe");
+        if (!marcaIRepository.existsById(id)) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "la marca que ingresaste no existe");
         }
 
-        if(!marcaIRepository.tieneLogo(id)){
-            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"La marca no tiene logo");
+        if (!marcaIRepository.tieneLogo(id)) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "La marca no tiene logo");
         }
 
         String logoNombre = marcaIRepository.obtenerLogoPorId(id);
@@ -118,27 +125,27 @@ public class MarcaServiceImpl implements MarcaIService {
         String extension = archivoUtil.obtenerExtension(logoNombre);
         String mediaType = "image/" + extension;
 
-        return new Pair<>(new ByteArrayResource(logoBytes),mediaType);
+        return new Pair<>(new ByteArrayResource(logoBytes), mediaType);
 
     }
 
     @Override
     public void eliminarLogo(Integer id) throws IOException {
 
-        if(!marcaIRepository.existsById(id)){
-            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"la marca que ingresaste no existe");
+        if (!marcaIRepository.existsById(id)) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "la marca que ingresaste no existe");
         }
 
-        if(!marcaIRepository.tieneLogo(id)){
-            throw new HttpGenericException(HttpStatus.BAD_REQUEST,"La marca no tiene logo");
+        if (!marcaIRepository.tieneLogo(id)) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "La marca no tiene logo");
         }
 
-        archivoUtil.eliminarLogo(marcaIRepository.obtenerLogoPorId(id));
+        archivoUtil.eliminarArchivo(marcaIRepository.obtenerLogoPorId(id));
         marcaIRepository.eliminarLogo(id);
     }
 
     @Override
-    public List<MarcaConLogoResponse> obtenerMarcasConLogo(){
+    public List<MarcaConLogoResponse> obtenerMarcasConLogo() {
 
         List<MarcaConLogoResponse> listaMarcasConLogo = new ArrayList<>();
         List<MarcaDto> listaMarcaDto = marcaIRepository.findAll().stream()
@@ -150,15 +157,15 @@ public class MarcaServiceImpl implements MarcaIService {
             String nombreLogo = marcaIRepository.obtenerLogoPorId(marcaDto.getId());
             String extension = archivoUtil.obtenerExtension(nombreLogo);
 
-            byte [] logo;
+            byte[] logo;
             try {
-               logo = archivoUtil.obtenerArchivo(nombreLogo);
+                logo = archivoUtil.obtenerArchivo(nombreLogo);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             MarcaConLogoResponse marcaConLogo = MarcaConLogoResponse.builder()
                     .marcaInfo(marcaMapper.toDto(marcaIRepository.findById(marcaDto.getId())))
-                    .mediaType("image/"+extension)
+                    .mediaType("image/" + extension)
                     .base64Image(Base64.getEncoder().encodeToString(logo))
                     .build();
 

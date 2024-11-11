@@ -11,6 +11,7 @@ import com.JJsCarRent.utils.mappers.VehiculoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class VehiculoServiceImpl implements VehiculoIService {
     private final VehiculoMapper vehiculoMapper;
 
     @Override
-    public void agregarVehiculo(VehiculoRequest request) {
+    public void agregarVehiculo(VehiculoRequest request, List<MultipartFile>fotos) {
 
         if (vehiculoIRepository.existsByPlaca(request.getPlaca())) {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "Ya tenemos esta placa registrada");

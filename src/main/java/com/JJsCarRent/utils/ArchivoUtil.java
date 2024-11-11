@@ -1,5 +1,11 @@
 package com.JJsCarRent.utils;
 
+import com.JJsCarRent.utils.adapters.ImageAdapter;
+import com.JJsCarRent.utils.strategy.TipoArchivo;
+import com.JJsCarRent.utils.strategy.ValidarExtensiones;
+import com.JJsCarRent.utils.strategy.ValidarImagen;
+import lombok.RequiredArgsConstructor;
+import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -8,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Component
 public class ArchivoUtil {
 
@@ -15,13 +22,15 @@ public class ArchivoUtil {
     private static final List<String> EXTENSIONES_VALIDAS = Arrays.asList("jpg", "jpeg", "png", "webp");
     private final static float TAMANIO_MAXIMO = 2 * 1024 * 1024; // 2MB
 
-    private String cambiarNombreArchivo(String nombreOriginal){
+    private final ImageAdapter imageAdapter;
+
+    private String cambiarNombreArchivo(String nombreOriginal) {
         return UUID.randomUUID().toString() + "." + obtenerExtension(nombreOriginal);
     }
 
-    public String subirArchivo(byte[] contenido, String nombreOriginal) throws IOException {
+    public String subirArchivo(byte[] contenido, String nombre) throws IOException {
 
-        String nuevoNombre = cambiarNombreArchivo(nombreOriginal);
+        String nuevoNombre = cambiarNombreArchivo(nombre);
 
         File directorio = new File(ArchivoUtil.UBICACION);
         if (!directorio.exists()) {
@@ -50,9 +59,9 @@ public class ArchivoUtil {
         return nombreArchivo.substring(nombreArchivo.lastIndexOf(".") + 1);
     }
 
-    public void eliminarLogo(String nombreLogo) throws IOException {
+    public void eliminarArchivo(String nombreArchivo) throws IOException {
 
-        File logo = new File(ArchivoUtil.UBICACION, nombreLogo);
+        File logo = new File(ArchivoUtil.UBICACION, nombreArchivo);
 
         if (!logo.exists()) {
             throw new FileNotFoundException("Archivo no encontrado");
@@ -61,16 +70,23 @@ public class ArchivoUtil {
         logo.delete();
     }
 
-    public boolean esExtensionValida(String nombreArchivo) {
-        if (nombreArchivo != null && nombreArchivo.contains(".")) {
-            String extension = nombreArchivo.substring(nombreArchivo.lastIndexOf(".") + 1).toLowerCase();
-            return EXTENSIONES_VALIDAS.contains(extension);
+    public boolean esExtensionValida(String nombreArchivo, TipoArchivo tipoArchivo) {
+        switch (tipoArchivo) {
+            case IMAGEN:
+                ValidarExtensiones validador = new ValidarImagen();
+                return validador.esExtensionValida(nombreArchivo);
         }
         return false;
     }
 
     public boolean esTamanioValido(byte[] contenido) {
         return contenido.length <= TAMANIO_MAXIMO;
+    }
+
+    public Pair<byte[], String> transformarAWebp(byte[] contenido, String nombre) throws IOException {
+        byte[] logoWebp = imageAdapter.getWebpImage(contenido);
+        String nombreLogoWebp = nombre.substring(0, nombre.lastIndexOf(".")) + ".webp";
+        return new Pair<>(logoWebp, nombreLogoWebp);
     }
 
 }

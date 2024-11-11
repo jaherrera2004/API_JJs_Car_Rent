@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,8 +24,10 @@ public class VehiculoController {
     @Operation(summary = "Agregar vehiculo nuevo")
     @PreAuthorize("hasAuthority('vehiculo:agregar-vehiculo')")
     @PostMapping
-    public void agregarVehiculo(@RequestBody @Valid VehiculoRequest request) {
-        vehiculoIService.agregarVehiculo(request);
+    public void agregarVehiculo(@RequestPart("data") @Valid VehiculoRequest request,
+                                @RequestPart("fotos") List<MultipartFile> fotos) {
+
+        vehiculoIService.agregarVehiculo(request,fotos);
     }
 
     @Operation(summary = "Obtener lista de vehiculos")
@@ -45,6 +48,7 @@ public class VehiculoController {
     @PreAuthorize("hasAuthority('vehiculo:activar')")
     @PutMapping("/{id}")
     public ResponseEntity<GenericResponse> activarVehiculo(@PathVariable Integer id){
+        vehiculoIService.activarVehiculo(id);
         return ResponseEntity.ok(GenericResponse.ok(true,"Vehiculo activado exitosamente"));
     }
 
