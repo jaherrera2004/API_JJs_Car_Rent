@@ -80,7 +80,7 @@ public class VehiculoRepositoryImpl implements VehiculoIRepository{
 
     @Override
     public String fotoByIdVehiculo(Integer id) {
-        String sql = "SELECT foto FROM tbl_vehiculoso WHERE id= ?";
+        String sql = "SELECT foto FROM tbl_vehiculos WHERE id= ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, String.class);
     }
 

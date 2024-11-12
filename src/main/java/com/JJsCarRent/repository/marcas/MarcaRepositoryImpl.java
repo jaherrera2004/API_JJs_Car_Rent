@@ -97,7 +97,7 @@ public class MarcaRepositoryImpl implements MarcaIRepository {
         String sql = "SELECT m.marca FROM tbl_marcas m" +
                     " JOIN tbl_modelos mo " +
                 "ON mo.id_marca=m.id" +
-                "WHERE mo.id=?";
+                " WHERE mo.id=?";
 
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, String.class);
     }
