@@ -16,4 +16,8 @@ public interface VehiculoIRepository {
     void desactivar(Integer id);
 
     void activar(Integer id);
+
+    void agregarFoto(String foto, String placa);
+
+    String fotoByIdVehiculo(Integer id);
 }

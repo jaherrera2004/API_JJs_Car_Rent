@@ -49,11 +49,12 @@ public class MarcaServiceImpl implements MarcaIService {
 
         Pair<byte[], String> logoWebp = archivoUtil.transformarAWebp(logo.getBytes(),logo.getOriginalFilename());
 
-        String nombreFoto = archivoUtil.subirArchivo(logoWebp.a, logoWebp.b);
-        marcaIRepository.actualizarFoto(nombreFoto, request.getMarca());
+        String nombreFoto= archivoUtil.cambiarNombreArchivo(logoWebp.b);
+        archivoUtil.subirArchivo(logoWebp.a, nombreFoto);
 
         MarcaDto marcaDto = construirMarca(request);
         marcaIRepository.save(marcaMapper.toEntity(marcaDto));
+        marcaIRepository.actualizarFoto(nombreFoto, request.getMarca());
     }
 
     @Override
@@ -105,7 +106,8 @@ public class MarcaServiceImpl implements MarcaIService {
         }
         Pair<byte[], String> logoWebp = archivoUtil.transformarAWebp(request.getLogo().getBytes(),request.getLogo().getOriginalFilename());
 
-        String nombreFoto = archivoUtil.subirArchivo(logoWebp.a, logoWebp.b);
+        String nombreFoto= archivoUtil.cambiarNombreArchivo(logoWebp.b);
+        archivoUtil.subirArchivo(logoWebp.a, nombreFoto);
         marcaIRepository.actualizarFoto(nombreFoto, request.getMarca());
     }
 

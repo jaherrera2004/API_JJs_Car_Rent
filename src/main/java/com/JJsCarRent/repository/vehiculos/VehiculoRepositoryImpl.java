@@ -71,4 +71,17 @@ public class VehiculoRepositoryImpl implements VehiculoIRepository{
         String sql = "CALL activar_vehiculo(?)";
         jdbcTemplate.update(sql,id);
     }
+
+    @Override
+    public void agregarFoto(String foto, String placa) {
+            String sql = "CALL agregar_foto_vehiculo(?,?)";
+            jdbcTemplate.update(sql,foto,placa);
+        }
+
+    @Override
+    public String fotoByIdVehiculo(Integer id) {
+        String sql = "SELECT foto FROM tbl_vehiculoso WHERE id= ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, String.class);
+    }
+
 }

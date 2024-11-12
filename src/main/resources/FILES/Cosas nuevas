@@ -1,47 +1,16 @@
+ALTER TABLE tbl_vehiculos ADD COLUMN foto VARCHAR(50);
+
 DELIMITER //
-
--- Procedimiento para activar un vehículo en tbl_vehiculos
-CREATE PROCEDURE activar_vehiculo(IN p_vehiculo_id INTEGER)
+CREATE PROCEDURE agregar_foto_vehiculo(IN p_foto VARCHAR(80), IN p_placa VARCHAR(10))
 BEGIN
-    UPDATE tbl_vehiculos
-    SET activo = 1
-    WHERE id = p_vehiculo_id;
+   UPDATE tbl_vehiculos SET foto = p_foto WHERE placa=p_placa;
 END //
 
--- Procedimiento para activar un tipo de vehículo en tbl_tipo_vehiculo
-CREATE PROCEDURE activar_tipo_vehiculo(IN p_tipo_vehiculo_id INTEGER)
-BEGIN
-    UPDATE tbl_tipo_vehiculo
-    SET activo = 1
-    WHERE id = p_tipo_vehiculo_id;
-END //
-
--- Procedimiento para activar un modelo en tbl_modelos
-CREATE PROCEDURE activar_modelo(IN p_modelo_id INTEGER)
-BEGIN
-    UPDATE tbl_modelos
-    SET activo = 1
-    WHERE id = p_modelo_id;
-END //
 
 DELIMITER ;
 
-
-INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('vehiculo:activar','Permiso para activar un vehiculo');
-
-INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
-((SELECT id FROM tbl_permisos WHERE permiso='vehiculo:activar'),1);
-
-
-INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('tipo-vehiculo:activar','Permiso para activar un tipo de vehiculo');
+INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('vehiculo:obtener-lista-fotos','Permiso para obtener la lista de vehiculos con su foto');
 
 INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
-((SELECT id FROM tbl_permisos WHERE permiso='tipo-vehiculo:activar'),1);
-
-INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('modelo:activar','Permiso para activar un modelo');
-
-INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
-((SELECT id FROM tbl_permisos WHERE permiso='modelo:activar'),1);
-
-
+((SELECT id FROM tbl_permisos WHERE permiso='vehiculo:obtener-lista-fotos'),1);
 

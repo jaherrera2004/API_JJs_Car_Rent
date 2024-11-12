@@ -24,26 +24,22 @@ public class ArchivoUtil {
 
     private final ImageAdapter imageAdapter;
 
-    private String cambiarNombreArchivo(String nombreOriginal) {
+    public String cambiarNombreArchivo(String nombreOriginal) {
         return UUID.randomUUID().toString() + "." + obtenerExtension(nombreOriginal);
     }
 
-    public String subirArchivo(byte[] contenido, String nombre) throws IOException {
-
-        String nuevoNombre = cambiarNombreArchivo(nombre);
+    public void subirArchivo(byte[] contenido, String nombre) throws IOException {
 
         File directorio = new File(ArchivoUtil.UBICACION);
         if (!directorio.exists()) {
             directorio.mkdirs();
         }
 
-        File archivoDestino = new File(directorio, nuevoNombre);
+        File archivoDestino = new File(directorio, nombre);
 
         try (FileOutputStream fos = new FileOutputStream(archivoDestino)) {
             fos.write(contenido);
         }
-
-        return nuevoNombre;
     }
 
     public byte[] obtenerArchivo(String nombreArchivo) throws IOException {
