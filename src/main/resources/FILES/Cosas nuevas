@@ -1,16 +1,102 @@
-ALTER TABLE tbl_vehiculos ADD COLUMN foto VARCHAR(50);
+CREATE TABLE `tbl_reservas` (
+	`id` INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
+	`fecha_inicio` TIMESTAMP,
+	`fecha_fin` TIMESTAMP,
+	`id_estado` INTEGER,
+	`id_vehiculo` INTEGER,
+	`id_usuario` INTEGER,
+	PRIMARY KEY(`id`)
+);
+
+CREATE TABLE `tbl_estado_reserva` (
+	`id` INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
+	`estado` VARCHAR(255),
+	`descripcion` VARCHAR(255),
+	PRIMARY KEY(`id`)
+);
+
+ALTER TABLE `tbl_reservas`
+ADD FOREIGN KEY(`id_usuario`) REFERENCES `tbl_usuarios`(`id`)
+ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE `tbl_reservas`
+ADD FOREIGN KEY(`id_estado`) REFERENCES `tbl_estado_reserva`(`id`)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+INSERT INTO `tbl_estado_reserva` (`estado`, `descripcion`)
+VALUES
+('Pendiente', 'Reserva en espera de confirmación'),
+('Confirmada', 'Reserva confirmada y asegurada'),
+('En Proceso', 'Vehículo está siendo preparado para la reserva'),
+('Completada', 'Reserva finalizada y vehículo devuelto'),
+('Cancelada', 'Reserva cancelada por el usuario o por el sistema'),
+('Rechazada', 'Reserva rechazada debido a incumplimiento de condiciones'),
+('Expirada', 'Reserva ha expirado sin confirmación o uso');
+
+CREATE TABLE `tbl_facturas` (
+	`id` INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
+	`valor` FLOAT,
+	`fecha` TIME,
+	`id_estado` INTEGER,
+	`descripcion` TEXT(65535),
+	`id_reserva` INTEGER,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `tbl_estados_facturas` (
+	`id` INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
+	`estado` VARCHAR(255),
+	`descripcion` VARCHAR(255),
+	PRIMARY KEY(`id`)
+);
+
+ALTER TABLE `tbl_facturas`
+ADD FOREIGN KEY(`id_reserva`) REFERENCES `tbl_reservas`(`id`)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+INSERT INTO `tbl_estados_facturas` (`estado`, `descripcion`)
+VALUES
+('Pendiente', 'Factura generada pero pendiente de pago'),
+('Pagada', 'Factura completamente pagada y confirmada'),
+('Cancelada', 'Factura anulada por el usuario o el sistema'),
+('Vencida', 'Factura vencida sin pago en el tiempo estipulado');
 
 DELIMITER //
-CREATE PROCEDURE agregar_foto_vehiculo(IN p_foto VARCHAR(80), IN p_placa VARCHAR(10))
-BEGIN
-   UPDATE tbl_vehiculos SET foto = p_foto WHERE placa=p_placa;
-END //
 
+CREATE PROCEDURE registrar_reserva (
+    IN p_fecha_inicio TIMESTAMP,
+    IN p_fecha_fin TIMESTAMP,
+    IN p_id_usuario INT,
+    IN p_id_vehiculo INT,
+    IN p_id_estado INT
+)
+BEGIN
+    INSERT INTO tbl_reservas (fecha_inicio, fecha_fin, id_usuario, id_vehiculo, id_estado)
+    VALUES (p_fecha_inicio, p_fecha_fin, p_id_usuario, p_id_vehiculo, p_id_estado);
+END //
 
 DELIMITER ;
 
-INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('vehiculo:obtener-lista-fotos','Permiso para obtener la lista de vehiculos con su foto');
+DELIMITER //
 
-INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
-((SELECT id FROM tbl_permisos WHERE permiso='vehiculo:obtener-lista-fotos'),1);
+CREATE TRIGGER after_reserva_insert
+AFTER INSERT ON tbl_reservas
+FOR EACH ROW
+BEGIN
+    DECLARE valor_dia FLOAT;
+    DECLARE dias INT;
 
+    -- Obtener el valor diario del vehículo reservado
+    SELECT v.valor_dia INTO valor_dia
+    FROM tbl_vehiculo AS v
+    WHERE v.id = NEW.id_vehiculo;
+
+    -- Calcular el número de días de la reserva
+    SET dias = DATEDIFF(NEW.fecha_fin, NEW.fecha_inicio);
+
+    -- Insertar la factura en tbl_facturas
+    INSERT INTO tbl_facturas (valor, fecha, id_estado, descripcion, id_reserva)
+    VALUES (valor_dia * dias, NOW(), 1, 'Factura generada automáticamente para la reserva', NEW.id);
+END //
+
+DELIMITER ;
