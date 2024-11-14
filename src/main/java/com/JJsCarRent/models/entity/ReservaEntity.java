@@ -15,7 +15,7 @@ public class ReservaEntity {
     private Integer idUsuario;
     private Integer idEstado;
     private LocalDate fechaInicio;
-    private Local fechaEntrega;
+    private LocalDate fechaEntrega;
 
 
 }

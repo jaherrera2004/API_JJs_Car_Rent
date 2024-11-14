@@ -7,6 +7,8 @@ import java.util.List;
 public interface VehiculoIRepository {
     void save(VehiculoEntity vehiculoEntity);
 
+    VehiculoEntity findById(Integer id);
+
     boolean existsByPlaca(String placa);
 
     boolean existsById(Integer id);

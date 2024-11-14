@@ -21,6 +21,9 @@ ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE `tbl_reservas`
 ADD FOREIGN KEY(`id_estado`) REFERENCES `tbl_estado_reserva`(`id`)
 ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE `tbl_reservas`
+ADD FOREIGN KEY(`id_vehiculo`) REFERENCES `tbl_vehiculos`(`id`)
+ON UPDATE CASCADE ON DELETE CASCADE;
 
 INSERT INTO `tbl_estado_reserva` (`estado`, `descripcion`)
 VALUES
@@ -35,7 +38,7 @@ VALUES
 CREATE TABLE `tbl_facturas` (
 	`id` INTEGER NOT NULL AUTO_INCREMENT UNIQUE,
 	`valor` FLOAT,
-	`fecha` TIME,
+	`fecha` TIMESTAMP,
 	`id_estado` INTEGER,
 	`descripcion` TEXT(65535),
 	`id_reserva` INTEGER,
@@ -66,9 +69,9 @@ DELIMITER //
 CREATE PROCEDURE registrar_reserva (
     IN p_fecha_inicio TIMESTAMP,
     IN p_fecha_fin TIMESTAMP,
-    IN p_id_usuario INT,
-    IN p_id_vehiculo INT,
-    IN p_id_estado INT
+    IN p_id_usuario INTEGER,
+    IN p_id_vehiculo INTEGER,
+    IN p_id_estado INTEGER
 )
 BEGIN
     INSERT INTO tbl_reservas (fecha_inicio, fecha_fin, id_usuario, id_vehiculo, id_estado)
@@ -84,11 +87,11 @@ AFTER INSERT ON tbl_reservas
 FOR EACH ROW
 BEGIN
     DECLARE valor_dia FLOAT;
-    DECLARE dias INT;
+    DECLARE dias INTEGER;
 
     -- Obtener el valor diario del vehículo reservado
     SELECT v.valor_dia INTO valor_dia
-    FROM tbl_vehiculo AS v
+    FROM tbl_vehiculos AS v
     WHERE v.id = NEW.id_vehiculo;
 
     -- Calcular el número de días de la reserva
@@ -100,3 +103,35 @@ BEGIN
 END //
 
 DELIMITER ;
+
+INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('reserva:crear','Permiso para crear una reserva');
+
+INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
+((SELECT id FROM tbl_permisos WHERE permiso='reserva:crear'),1);
+
+CREATE VIEW ver_reservas AS
+SELECT
+    r.id,
+    r.id_vehiculo,
+    r.id_usuario,
+    r.id_estado,
+    r.fecha_inicio,
+    r.fecha_fin
+FROM
+    tbl_reservas r;
+
+INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('reserva:obtener-lista','Permiso para obtener la lista de reservas');
+
+INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
+((SELECT id FROM tbl_permisos WHERE permiso='reserva:obtener-lista'),1);
+
+INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('reserva:obtener-lista-por-usuario','Permiso para obtener la lista de reservas por usuario');
+
+INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
+((SELECT id FROM tbl_permisos WHERE permiso='reserva:obtener-lista-por-usuario'),1);
+
+INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('reserva:actualizar','Permiso para actualizar el estado de una reserva');
+
+INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
+((SELECT id FROM tbl_permisos WHERE permiso='reserva:actualizar'),1);
+
