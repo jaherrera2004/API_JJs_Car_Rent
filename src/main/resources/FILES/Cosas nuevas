@@ -135,3 +135,56 @@ INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('reserva:actualizar','Pe
 INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
 ((SELECT id FROM tbl_permisos WHERE permiso='reserva:actualizar'),1);
 
+DELIMITER //
+
+CREATE FUNCTION vehiculo_disponible(id_vehiculo INT, fecha_inicio TIMESTAMP, fecha_fin TIMESTAMP)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+    DECLARE disponible BOOLEAN;
+
+    SET disponible = NOT EXISTS (
+        SELECT 1
+        FROM tbl_reservas AS r
+        WHERE r.id_vehiculo = id_vehiculo
+          AND r.fecha_inicio < fecha_fin
+          AND r.fecha_fin > fecha_inicio
+          AND r.id_estado IN (
+              SELECT id FROM tbl_estado_reserva WHERE estado IN ('Pendiente', 'Confirmada')
+          )
+    );
+
+    RETURN disponible;
+END //
+
+DELIMITER ;
+
+SELECT vehiculo_disponible(12, '2024-11-12', '2024-11-14') AS disponible;
+
+CREATE VIEW ver_vehiculos_activos_por_tipo AS
+SELECT
+    v.id AS id_vehiculo,
+    v.placa,
+    v.anio,
+    v.kilometraje,
+    v.valor_dia,
+    v.color,
+    m.modelo,
+    t.tipo AS tipo_vehiculo,
+    t.id AS id_tipo_vehiculo
+FROM
+    tbl_vehiculos v
+JOIN
+    tbl_modelos m ON v.id_modelo = m.id
+JOIN
+    tbl_tipo_vehiculo t ON m.id_tipo_vehiculo = t.id
+WHERE
+    v.activo = TRUE;
+
+    INSERT INTO tbl_permisos (permiso, descripcion) VALUES ('vehiculo:obtener-lista-disponibles','Permiso para obtener la lista de vehiculos disponibles en un rango de fechas segun el tipo de vehiculo');
+
+    INSERT INTO tbl_rol_detalles(id_permiso, id_rol) VALUES
+    ((SELECT id FROM tbl_permisos WHERE permiso='vehiculo:obtener-lista-disponibles'),1);
+
+
+

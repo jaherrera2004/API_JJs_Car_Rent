@@ -8,12 +8,14 @@ import com.JJsCarRent.services.vehiculos.VehiculoIService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -45,6 +47,16 @@ public class VehiculoController {
     @GetMapping
     public List<VehiculosDatosResponse> obtenerListaVehiculos() {
         return vehiculoIService.obtenerListaVehiculos();
+    }
+
+    @Operation(summary = "Obtener lista de vehiculos")
+    @PreAuthorize("hasAuthority('vehiculo:obtener-lista-disponibles')")
+    @GetMapping("/disponibles")
+    public List<VehiculoFotoResponse> obtenerVehiculosDisponibles(@RequestPart("idTipoVehiculo") Integer idTipoVehiculo,
+                                                                  @RequestPart("fechaInicio") LocalDate fechaInicio,
+                                                                  @RequestPart("fechaFin") LocalDate fechaEntrega){
+
+        return vehiculoIService.obtenerVehiculosDisponibles(idTipoVehiculo, fechaInicio, fechaEntrega);
     }
 
     @Operation(summary = "Desactivar vehiculo")

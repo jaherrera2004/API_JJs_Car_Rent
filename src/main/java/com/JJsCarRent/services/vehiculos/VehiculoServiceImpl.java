@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -57,7 +58,6 @@ public class VehiculoServiceImpl implements VehiculoIService {
 
         VehiculoDto vehiculoDto = construirVehiculo(request);
         vehiculoIRepository.save(vehiculoMapper.toEntity(vehiculoDto));
-
 
         String nombreArchivo = archivoUtil.cambiarNombreArchivo(fotoWebp.b);
 
@@ -105,28 +105,28 @@ public class VehiculoServiceImpl implements VehiculoIService {
 
         List<VehiculoFotoResponse> listaVehiculosFotoResponse = new ArrayList<>();
 
-        listaVehiculosDto.forEach(vehiculoDto -> {
-
-            VehiculosDatosResponse vehiculoInfo = construirVehiculoResponse(vehiculoDto);
-            String nombreFoto = vehiculoIRepository.fotoByIdVehiculo(vehiculoDto.getId());
-            String extension = archivoUtil.obtenerExtension(nombreFoto);
-            byte[] foto;
-
-            try {
-                 foto = archivoUtil.obtenerArchivo(nombreFoto);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            VehiculoFotoResponse vehiculoFotoResponse= VehiculoFotoResponse.builder()
-                    .VehiculoInfo(vehiculoInfo)
-                    .mediaType("image/" + extension)
-                    .base64Image(Base64.getEncoder().encodeToString(foto)).build();
-
-            listaVehiculosFotoResponse.add(vehiculoFotoResponse);
-        });
+        listaVehiculosDto.forEach(vehiculoDto -> listaVehiculosFotoResponse.add(construirVehiculoFotoResponse(vehiculoDto)));
 
         return listaVehiculosFotoResponse;
+    }
+
+    @Override
+    public List<VehiculoFotoResponse> obtenerVehiculosDisponibles(Integer idTipoVehiculo, LocalDate fechaInicio, LocalDate fechaEntrega) {
+
+        List<VehiculoDto> listaVehiculosPorTipoDto = vehiculoIRepository.findAllByTipo(idTipoVehiculo)
+                .stream()
+                .map(vehiculoMapper::toDto)
+                .toList();
+
+        listaVehiculosPorTipoDto.stream()
+                .filter(vehiculoDto -> vehiculoIRepository.isVehiculoDisponible(vehiculoDto.getId(), fechaInicio, fechaEntrega))
+                .toList();
+
+        List<VehiculoFotoResponse> listaVehiculosDisponibles = new ArrayList<>();
+
+        listaVehiculosPorTipoDto.forEach(vehiculoDto -> listaVehiculosDisponibles.add(construirVehiculoFotoResponse(vehiculoDto)));
+
+        return listaVehiculosDisponibles;
     }
 
     private VehiculoDto construirVehiculo(VehiculoRequest request) {
@@ -155,17 +155,23 @@ public class VehiculoServiceImpl implements VehiculoIService {
                 .build();
     }
 
-//    private VehiculoFotoResponse construirVehiculoFotoResponse(VehiculoDto vehiculoDto) {
-//        return VehiculoFotoResponse.builder()
-//                .id(vehiculoDto.getId())
-//                .placa(vehiculoDto.getPlaca())
-//                .marca(marcaIRepository.findMarcaByModeloId(vehiculoDto.getIdModelo()))
-//                .modelo(modeloIRepository.findModeloById(vehiculoDto.getIdModelo()))
-//                .anio(vehiculoDto.getAnio())
-//                .kilometraje(vehiculoDto.getKilometraje())
-//                .valorDia(vehiculoDto.getValorDia())
-//                .color(vehiculoDto.getColor())
-//                .foto(vehiculoIRepository.fotoByIdVehiculo(vehiculoDto.getId()))
-//                .build();
-//    }
+    private VehiculoFotoResponse construirVehiculoFotoResponse(VehiculoDto vehiculoDto) {
+        VehiculosDatosResponse vehiculoInfo = construirVehiculoResponse(vehiculoDto);
+        String nombreFoto = vehiculoIRepository.fotoByIdVehiculo(vehiculoDto.getId());
+        String extension = archivoUtil.obtenerExtension(nombreFoto);
+        byte[] foto;
+
+        try {
+            foto = archivoUtil.obtenerArchivo(nombreFoto);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        VehiculoFotoResponse vehiculoFotoResponse = VehiculoFotoResponse.builder()
+                .VehiculoInfo(vehiculoInfo)
+                .mediaType("image/" + extension)
+                .base64Image(Base64.getEncoder().encodeToString(foto)).build();
+
+        return vehiculoFotoResponse;
+    }
 }

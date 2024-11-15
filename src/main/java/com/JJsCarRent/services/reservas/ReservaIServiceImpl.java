@@ -36,6 +36,10 @@ public class ReservaIServiceImpl implements ReservaIService {
             throw new HttpGenericException(HttpStatus.BAD_REQUEST, "El vehiculo ingresado no existe");
         }
 
+        if(!vehiculoIRepository.isVehiculoDisponible(request.getIdVehiculo(), request.getFechaInicio(),request.getFechaEntrega())){
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "El vehiculo ingresado no esta disponible para esta fecha");
+        }
+
         ReservaDto reservaDto = construirDto(request);
         reservaIRepository.save(reservaMapper.toEntity(reservaDto));
     }
