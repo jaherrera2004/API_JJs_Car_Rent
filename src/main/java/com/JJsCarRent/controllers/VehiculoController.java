@@ -8,7 +8,7 @@ import com.JJsCarRent.services.vehiculos.VehiculoIService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +57,13 @@ public class VehiculoController {
                                                                   @RequestParam("fechaFin") LocalDate fechaEntrega){
 
         return vehiculoIService.obtenerVehiculosDisponibles(idTipoVehiculo, fechaInicio, fechaEntrega);
+    }
+
+    @Operation(summary = "Obtener vehiculo por id")
+    @PreAuthorize("hasAuthority('vehiculo:obtener-por-id')")
+    @GetMapping("/{id}")
+    public VehiculoFotoResponse obtenerVehiculoPorId(@PathVariable  Integer id) {
+        return vehiculoIService.obtenerVehiculoPorId(id);
     }
 
     @Operation(summary = "Desactivar vehiculo")

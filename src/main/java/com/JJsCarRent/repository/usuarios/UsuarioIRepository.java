@@ -26,4 +26,6 @@ public interface UsuarioIRepository {
     boolean existsByUsername(String username);
 
     boolean existsByTelefono(String telefono);
+
+    Integer obtenerTotalUsuarios();
 }

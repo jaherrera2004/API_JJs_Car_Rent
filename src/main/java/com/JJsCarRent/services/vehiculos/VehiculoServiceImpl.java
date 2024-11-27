@@ -129,6 +129,18 @@ public class VehiculoServiceImpl implements VehiculoIService {
         return listaVehiculosDisponibles;
     }
 
+    @Override
+    public VehiculoFotoResponse obtenerVehiculoPorId(Integer id) {
+
+        if (!vehiculoIRepository.existsById(id)) {
+            throw new HttpGenericException(HttpStatus.BAD_REQUEST, "El vehiculo que has ingresado no existe");
+        }
+        VehiculoDto vehiculoDto = vehiculoMapper.toDto(vehiculoIRepository.findById(id));
+
+        return construirVehiculoFotoResponse(vehiculoDto);
+
+    }
+
     private VehiculoDto construirVehiculo(VehiculoRequest request) {
         return VehiculoDto.builder()
                 .placa(request.getPlaca())

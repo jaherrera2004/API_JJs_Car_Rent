@@ -87,5 +87,13 @@ public class ReservaRepositoryImpl implements ReservaIRepository {
         jdbcTemplate.update(sql, idEstado, idReserva);
     }
 
+    @Override
+    public Integer obtenerTotalReservas() {
+        String sql = "SELECT COUNT(*) FROM tbl_reservas";
+        Integer totalReservas = jdbcTemplate.queryForObject(sql, Integer.class);
+        return totalReservas != null ? totalReservas : 0;
+    }
+
+
 
 }

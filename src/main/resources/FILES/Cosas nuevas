@@ -163,15 +163,14 @@ SELECT vehiculo_disponible(12, '2024-11-12', '2024-11-14') AS disponible;
 
 CREATE VIEW ver_vehiculos_activos_por_tipo AS
 SELECT
-    v.id AS id_vehiculo,
-    v.placa,
-    v.anio,
-    v.kilometraje,
-    v.valor_dia,
-    v.color,
-    m.modelo,
-    t.tipo AS tipo_vehiculo,
-    t.id AS id_tipo_vehiculo
+    v.id AS id,
+    v.placa AS placa,
+    v.anio AS anio,
+    v.kilometraje AS kilometraje,
+    v.valor_dia AS valor_dia,
+    v.color AS color,
+    v.activo AS activo,
+
 FROM
     tbl_vehiculos v
 JOIN

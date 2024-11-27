@@ -19,4 +19,6 @@ public interface ReservaIRepository {
     boolean existsById(Integer id);
 
     void updateEstado(Integer idReserva, Integer idEstado);
+
+    Integer obtenerTotalReservas();
 }

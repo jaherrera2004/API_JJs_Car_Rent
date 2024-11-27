@@ -160,4 +160,12 @@ public class UsuarioRepositoryImpl implements UsuarioIRepository {
 
         return count != null && count > 0;
     }
+
+    @Override
+    public Integer obtenerTotalUsuarios() {
+        String sql = "SELECT COUNT(*) FROM tbl_usuarios WHERE id_rol=2;";
+        Integer totalUsuarios = jdbcTemplate.queryForObject(sql, Integer.class);
+        return totalUsuarios != null ? totalUsuarios : 0;
+    }
+
 }

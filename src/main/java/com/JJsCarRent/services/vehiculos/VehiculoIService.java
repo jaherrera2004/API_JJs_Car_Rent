@@ -21,4 +21,6 @@ public interface VehiculoIService {
     List<VehiculoFotoResponse> obtenerVehiculosConFotos();
 
     List<VehiculoFotoResponse> obtenerVehiculosDisponibles(Integer id, LocalDate fechaInicio, LocalDate fechaEntrega);
+
+    VehiculoFotoResponse obtenerVehiculoPorId(Integer id);
 }

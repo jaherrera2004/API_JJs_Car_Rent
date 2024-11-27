@@ -27,4 +27,6 @@ public interface VehiculoIRepository {
     void agregarFoto(String foto, String placa);
 
     String fotoByIdVehiculo(Integer id);
+
+    Integer obtenerTotalVehiculos();
 }

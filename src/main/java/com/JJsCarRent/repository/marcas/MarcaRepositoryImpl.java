@@ -13,7 +13,6 @@ import java.util.List;
 public class MarcaRepositoryImpl implements MarcaIRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final MarcaMapper marcaMapper;
 
     @Override
     public boolean existsByMarca(String marca) {

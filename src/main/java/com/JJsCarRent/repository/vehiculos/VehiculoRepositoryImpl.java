@@ -134,4 +134,12 @@ public class VehiculoRepositoryImpl implements VehiculoIRepository {
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, String.class);
     }
 
+    @Override
+    public Integer obtenerTotalVehiculos() {
+        String sql = "SELECT COUNT(*) FROM tbl_vehiculos";
+        Integer totalVehiculos = jdbcTemplate.queryForObject(sql, Integer.class);
+        return totalVehiculos != null ? totalVehiculos : 0;
+    }
+
+
 }
