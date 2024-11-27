@@ -41,6 +41,7 @@ public class ReservaIServiceImpl implements ReservaIService {
         }
 
         ReservaDto reservaDto = construirDto(request);
+        reservaDto.setIdEstado(2);
         reservaIRepository.save(reservaMapper.toEntity(reservaDto));
     }
 
