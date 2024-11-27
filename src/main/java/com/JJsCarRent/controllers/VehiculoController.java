@@ -52,9 +52,9 @@ public class VehiculoController {
     @Operation(summary = "Obtener lista de vehiculos")
     @PreAuthorize("hasAuthority('vehiculo:obtener-lista-disponibles')")
     @GetMapping("/disponibles")
-    public List<VehiculoFotoResponse> obtenerVehiculosDisponibles(@RequestPart("idTipoVehiculo") Integer idTipoVehiculo,
-                                                                  @RequestPart("fechaInicio") LocalDate fechaInicio,
-                                                                  @RequestPart("fechaFin") LocalDate fechaEntrega){
+    public List<VehiculoFotoResponse> obtenerVehiculosDisponibles(@RequestParam("idTipoVehiculo") Integer idTipoVehiculo,
+                                                                  @RequestParam("fechaInicio") LocalDate fechaInicio,
+                                                                  @RequestParam("fechaFin") LocalDate fechaEntrega){
 
         return vehiculoIService.obtenerVehiculosDisponibles(idTipoVehiculo, fechaInicio, fechaEntrega);
     }
